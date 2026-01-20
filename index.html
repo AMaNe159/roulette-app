@@ -4,25 +4,19 @@
     <meta name="google-site-verification" content="lqt43xJhi_OkVCen8liuhbkQv4pOL0bWKalBzB-gJp8" />
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <!-- SEO用のメタタグ -->
     <title>ルーレット - 確率調整可能なオンラインルーレット</title>
     <meta name="description" content="可愛いパステルカラーのカスタマイズ可能なルーレットアプリ。確率調整機能付きで、オンラインでいつでも簡単に使えます。">
     <meta name="keywords" content="webルーレット,ルーレット, オンラインルーレット, 確率調整, パステルカラー, 抽選ツール, 無料ルーレット,roulette,オンラインルーレット">
-    
-    <!-- OGP設定（SNSでシェアされた時の表示設定） -->
+
     <meta property="og:title" content="かわいいデザインのルーレット - 確率調整可能なオンラインルーレット">
     <meta property="og:description" content="可愛いパステルカラーのカスタマイズ可能なルーレットアプリ。確率調整機能付きで、オンラインでいつでも簡単に使えます。">
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://pastelroulette.netlify.app/">
-    
-    <!-- その他の既存のlink, scriptタグ -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" rel="stylesheet">
 
-    
-    <title>パステルルーレット</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
     <style>
         @import url('https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@300;400;500;700&display=swap');
 
@@ -31,8 +25,29 @@
             --secondary-color: #93c5fd;
             --accent-color: #a5b4fc;
             --background-color: #faf5ff;
+            --card-background: rgba(255, 255, 255, 0.85);
             --text-color: #4a044e;
+            --text-secondary: #6b7280;
+            --border-color: rgba(255, 255, 255, 0.2);
+            --shadow-color: rgba(31, 38, 135, 0.1);
             --font-family: 'M PLUS Rounded 1c', sans-serif;
+        }
+
+        [data-theme="dark"] {
+            --primary-color: #db7093;
+            --secondary-color: #6495ed;
+            --accent-color: #9370db;
+            --background-color: #1a1a2e;
+            --card-background: rgba(30, 30, 50, 0.9);
+            --text-color: #f0f0f0;
+            --text-secondary: #a0a0a0;
+            --border-color: rgba(100, 100, 150, 0.3);
+            --shadow-color: rgba(0, 0, 0, 0.3);
+        }
+
+        * {
+            box-sizing: border-box;
+            transition: background-color 0.3s ease, color 0.3s ease;
         }
 
         body {
@@ -45,18 +60,26 @@
         }
 
         .glass-effect {
-            background: rgba(255, 255, 255, 0.85);
+            background: var(--card-background);
             backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.1);
+            border: 1px solid var(--border-color);
+            box-shadow: 0 8px 32px 0 var(--shadow-color);
         }
 
         .roulette-container {
             position: relative;
-            width: 500px;
-            height: 500px;
+            width: min(400px, 90vw);
+            height: min(400px, 90vw);
             transition: transform 0.3s ease;
             cursor: pointer;
+            margin: 0 auto;
+        }
+
+        @media (min-width: 1024px) {
+            .roulette-container {
+                width: 450px;
+                height: 450px;
+            }
         }
 
         .roulette-container:hover {
@@ -73,6 +96,8 @@
             position: absolute;
             top: 0;
             left: 0;
+            width: 100%;
+            height: 100%;
             border-radius: 50%;
             box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
             transition: box-shadow 0.3s ease;
@@ -80,11 +105,11 @@
 
         .pointer {
             position: absolute;
-            top: -40px;
+            top: -30px;
             left: 50%;
             transform: translateX(-50%);
-            width: 40px;
-            height: 60px;
+            width: 30px;
+            height: 50px;
             background-color: #f43f5e;
             clip-path: polygon(50% 100%, 0 0, 100% 0);
             z-index: 10;
@@ -98,8 +123,8 @@
             top: 0;
             left: 50%;
             transform: translateX(-50%);
-            width: 20px;
-            height: 20px;
+            width: 15px;
+            height: 15px;
             background-color: #ffffff;
             border-radius: 50%;
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
@@ -116,10 +141,10 @@
         }
 
         .item-list {
-            max-height: 300px;
+            max-height: 250px;
             overflow-y: auto;
-            padding: 1rem;
-            background: white;
+            padding: 0.75rem;
+            background: var(--card-background);
             border-radius: 1rem;
             box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.05);
         }
@@ -127,42 +152,74 @@
         .item-row {
             display: flex;
             align-items: center;
-            gap: 1rem;
+            gap: 0.5rem;
             padding: 0.5rem;
             border-radius: 0.5rem;
-            background: white;
+            background: var(--card-background);
             margin-bottom: 0.5rem;
             transition: all 0.3s ease;
+            flex-wrap: wrap;
+        }
+
+        @media (min-width: 640px) {
+            .item-row {
+                flex-wrap: nowrap;
+                gap: 1rem;
+            }
         }
 
         .item-row:hover {
-            background: #f8f8f8;
             transform: translateX(4px);
         }
 
-        .weight-input {
-            width: 80px;
+        .item-input {
+            flex: 1;
+            min-width: 80px;
             padding: 0.5rem;
-            border: 1px solid #e2e8f0;
+            border: 1px solid var(--border-color);
+            border-radius: 0.5rem;
+            text-align: left;
+            font-size: 0.875rem;
+            transition: all 0.3s ease;
+            background: var(--card-background);
+            color: var(--text-color);
+        }
+
+        .weight-input {
+            width: 60px;
+            padding: 0.5rem;
+            border: 1px solid var(--border-color);
             border-radius: 0.5rem;
             text-align: center;
             font-size: 0.875rem;
             transition: all 0.3s ease;
+            background: var(--card-background);
+            color: var(--text-color);
         }
 
-        .weight-input:focus {
+        .color-input {
+            width: 40px;
+            height: 36px;
+            padding: 2px;
+            border: none;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            background: transparent;
+        }
+
+        .item-input:focus, .weight-input:focus {
             outline: none;
             border-color: var(--primary-color);
             box-shadow: 0 0 0 3px rgba(249, 168, 212, 0.2);
         }
 
-        .spin-button {
-            background: linear-gradient(45deg, #f9a8d4, #93c5fd);
+        .btn {
+            background: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
             color: white;
-            padding: 1rem 2rem;
+            padding: 0.75rem 1.5rem;
             border-radius: 1rem;
             font-weight: 700;
-            font-size: 1.25rem;
+            font-size: 1rem;
             border: none;
             cursor: pointer;
             transition: all 0.3s ease;
@@ -171,20 +228,41 @@
             letter-spacing: 1px;
         }
 
-        .spin-button:hover {
+        .btn:hover {
             transform: translateY(-2px);
             box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
         }
 
-        .spin-button:active {
+        .btn:active {
             transform: translateY(1px);
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         }
 
-        .spin-button:disabled {
+        .btn:disabled {
             opacity: 0.7;
             cursor: not-allowed;
             transform: none;
+        }
+
+        .btn-secondary {
+            background: var(--card-background);
+            color: var(--text-color);
+            border: 1px solid var(--border-color);
+        }
+
+        .btn-small {
+            padding: 0.5rem 1rem;
+            font-size: 0.875rem;
+        }
+
+        .btn-icon {
+            padding: 0.5rem;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
         .result-display {
@@ -192,9 +270,10 @@
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%) scale(0.9);
-            background: rgba(255, 255, 255, 0.95);
+            background: var(--card-background);
+            backdrop-filter: blur(20px);
             padding: 2rem;
-            border-radius: 1rem;
+            border-radius: 1.5rem;
             box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
             z-index: 1000;
             opacity: 0;
@@ -202,6 +281,7 @@
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             max-width: 90vw;
             width: 400px;
+            text-align: center;
         }
 
         .result-display.show {
@@ -210,8 +290,26 @@
             transform: translate(-50%, -50%) scale(1);
         }
 
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 999;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .modal-overlay.show {
+            opacity: 1;
+            visibility: visible;
+        }
+
         .total-weight {
-            background: #f8f8f8;
+            background: var(--card-background);
             padding: 0.75rem;
             border-radius: 0.5rem;
             text-align: center;
@@ -224,101 +322,537 @@
             background: #fee2e2;
             color: #991b1b;
         }
+
+        .history-item {
+            padding: 0.5rem;
+            border-bottom: 1px solid var(--border-color);
+            font-size: 0.875rem;
+        }
+
+        .history-item:last-child {
+            border-bottom: none;
+        }
+
+        .theme-toggle {
+            position: fixed;
+            top: 1rem;
+            right: 1rem;
+            z-index: 100;
+        }
+
+        .settings-toggle {
+            position: fixed;
+            top: 1rem;
+            right: 4rem;
+            z-index: 100;
+        }
+
+        .tab-container {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .tab {
+            flex: 1;
+            padding: 0.75rem;
+            text-align: center;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            background: var(--card-background);
+            border: 1px solid var(--border-color);
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
+
+        .tab.active {
+            background: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            border-color: transparent;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .stat-card {
+            background: var(--card-background);
+            padding: 1rem;
+            border-radius: 0.75rem;
+            margin-bottom: 0.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .stat-bar {
+            height: 8px;
+            background: var(--border-color);
+            border-radius: 4px;
+            overflow: hidden;
+            margin-top: 0.5rem;
+        }
+
+        .stat-bar-fill {
+            height: 100%;
+            border-radius: 4px;
+            transition: width 0.5s ease;
+        }
+
+        .preset-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.75rem;
+            background: var(--card-background);
+            border-radius: 0.5rem;
+            margin-bottom: 0.5rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .preset-item:hover {
+            transform: translateX(4px);
+        }
+
+        .confetti {
+            position: fixed;
+            width: 10px;
+            height: 10px;
+            pointer-events: none;
+            z-index: 1001;
+        }
+
+        .share-buttons {
+            display: flex;
+            gap: 0.5rem;
+            justify-content: center;
+            margin-top: 1rem;
+        }
+
+        .share-btn {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.25rem;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+            border: none;
+        }
+
+        .share-btn:hover {
+            transform: scale(1.1);
+        }
+
+        .share-btn.twitter { background: #1da1f2; }
+        .share-btn.line { background: #00b900; }
+        .share-btn.copy { background: #6b7280; }
+
+        .keyboard-hint {
+            position: fixed;
+            bottom: 1rem;
+            left: 1rem;
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+            background: var(--card-background);
+            padding: 0.5rem 1rem;
+            border-radius: 0.5rem;
+            opacity: 0.7;
+        }
+
+        @media (max-width: 640px) {
+            .keyboard-hint {
+                display: none;
+            }
+        }
+
+        .settings-panel {
+            position: fixed;
+            top: 0;
+            right: -350px;
+            width: 320px;
+            height: 100vh;
+            background: var(--card-background);
+            backdrop-filter: blur(20px);
+            z-index: 1000;
+            padding: 1.5rem;
+            transition: right 0.3s ease;
+            overflow-y: auto;
+            box-shadow: -4px 0 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .settings-panel.open {
+            right: 0;
+        }
+
+        .setting-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 0;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .toggle-switch {
+            position: relative;
+            width: 50px;
+            height: 26px;
+            background: var(--border-color);
+            border-radius: 13px;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+
+        .toggle-switch.active {
+            background: var(--primary-color);
+        }
+
+        .toggle-switch::after {
+            content: '';
+            position: absolute;
+            top: 3px;
+            left: 3px;
+            width: 20px;
+            height: 20px;
+            background: white;
+            border-radius: 50%;
+            transition: left 0.3s ease;
+        }
+
+        .toggle-switch.active::after {
+            left: 27px;
+        }
+
+        .delete-btn {
+            background: #ef4444;
+            color: white;
+            border: none;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+
+        .delete-btn:hover {
+            background: #dc2626;
+            transform: scale(1.1);
+        }
+
+        @media (max-width: 1024px) {
+            .main-grid {
+                grid-template-columns: 1fr !important;
+            }
+        }
     </style>
 </head>
-<body class="p-6">
+<body class="p-4 md:p-6">
+    <!-- Theme Toggle -->
+    <button class="theme-toggle btn btn-icon btn-secondary" id="themeToggle" title="ダークモード切替 (D)">
+        <i class="fas fa-moon"></i>
+    </button>
+
+    <!-- Settings Toggle -->
+    <button class="settings-toggle btn btn-icon btn-secondary" id="settingsToggle" title="設定">
+        <i class="fas fa-cog"></i>
+    </button>
+
+    <!-- Settings Panel -->
+    <div class="settings-panel" id="settingsPanel">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+            <h2 style="font-size: 1.25rem; font-weight: bold;">設定</h2>
+            <button class="btn btn-icon btn-secondary" onclick="toggleSettings()">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+
+        <div class="setting-item">
+            <span>サウンド</span>
+            <div class="toggle-switch" id="soundToggle" onclick="toggleSound()"></div>
+        </div>
+
+        <div class="setting-item">
+            <span>紙吹雪エフェクト</span>
+            <div class="toggle-switch active" id="confettiToggle" onclick="toggleConfetti()"></div>
+        </div>
+
+        <div class="setting-item">
+            <span>振動 (モバイル)</span>
+            <div class="toggle-switch active" id="vibrationToggle" onclick="toggleVibration()"></div>
+        </div>
+
+        <div style="margin-top: 2rem;">
+            <h3 style="font-weight: 600; margin-bottom: 1rem;">キーボードショートカット</h3>
+            <div style="font-size: 0.875rem; color: var(--text-secondary);">
+                <p><strong>Space / Enter</strong> - 回転開始</p>
+                <p><strong>D</strong> - ダークモード切替</p>
+                <p><strong>A</strong> - 項目追加</p>
+                <p><strong>R</strong> - リセット</p>
+                <p><strong>S</strong> - 設定パネル</p>
+            </div>
+        </div>
+
+        <div style="margin-top: 2rem;">
+            <button class="btn btn-secondary w-full" onclick="resetAll()">
+                <i class="fas fa-trash-alt mr-2"></i>すべてリセット
+            </button>
+        </div>
+    </div>
+
     <div class="max-w-7xl mx-auto">
-        <header class="mb-8">
-            <h1 class="text-4xl font-bold mb-2">ルーレット</h1>
-            <p class="text-gray-600">確率を調整できるカスタマイズ可能なルーレットアプリ</p>
+        <header class="mb-6 text-center md:text-left">
+            <h1 class="text-3xl md:text-4xl font-bold mb-2">ルーレット</h1>
+            <p style="color: var(--text-secondary);">確率を調整できるカスタマイズ可能なルーレットアプリ</p>
         </header>
 
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+        <div class="main-grid grid grid-cols-1 lg:grid-cols-2 gap-6">
             <!-- ルーレットセクション -->
             <div class="flex flex-col items-center">
-                <div class="roulette-container mb-6">
+                <div class="roulette-container mb-4">
                     <div class="roulette-content">
-                        <canvas id="rouletteCanvas" width="500" height="500"></canvas>
-                        <div class="pointer"></div>
+                        <canvas id="rouletteCanvas"></canvas>
+                        <div class="pointer" id="pointer"></div>
                     </div>
                 </div>
-                <button id="spinButton" class="spin-button">回転開始</button>
+                <button id="spinButton" class="btn" style="font-size: 1.25rem; padding: 1rem 2.5rem;">
+                    <i class="fas fa-play mr-2"></i>回転開始
+                </button>
             </div>
 
             <!-- コントロールセクション -->
-            <div class="controls-section glass-effect rounded-2xl p-6">
-                <div class="mb-8">
-                    <h2 class="text-xl font-bold mb-4">項目と確率の設定</h2>
-                    <div class="item-list" id="itemList">
-                        <!-- 項目リストはJavaScriptで動的に生成 -->
-                    </div>
-                    <div class="total-weight mt-4" id="totalWeight">
-                        合計確率: 0%
-                    </div>
-                    <button id="addItemButton" class="spin-button w-full mt-4 text-base">
-                        項目を追加
+            <div class="controls-section glass-effect rounded-2xl p-4 md:p-6">
+                <!-- タブ -->
+                <div class="tab-container">
+                    <div class="tab active" data-tab="items">項目設定</div>
+                    <div class="tab" data-tab="history">履歴</div>
+                    <div class="tab" data-tab="stats">統計</div>
+                    <div class="tab" data-tab="presets">プリセット</div>
+                </div>
+
+                <!-- 項目設定タブ -->
+                <div class="tab-content active" id="tab-items">
+                    <div class="item-list" id="itemList"></div>
+                    <div class="total-weight mt-3" id="totalWeight">合計確率: 0%</div>
+                    <button id="addItemButton" class="btn w-full mt-3">
+                        <i class="fas fa-plus mr-2"></i>項目を追加
                     </button>
                 </div>
 
-                <div>
-                    <h2 class="text-xl font-bold mb-4">履歴</h2>
-                    <div id="historyList" class="history-list"></div>
+                <!-- 履歴タブ -->
+                <div class="tab-content" id="tab-history">
+                    <div id="historyList" style="max-height: 300px; overflow-y: auto;"></div>
+                    <button class="btn btn-secondary w-full mt-3" onclick="clearHistory()">
+                        <i class="fas fa-trash mr-2"></i>履歴をクリア
+                    </button>
+                </div>
+
+                <!-- 統計タブ -->
+                <div class="tab-content" id="tab-stats">
+                    <div id="statsList"></div>
+                    <div class="mt-3" style="text-align: center; color: var(--text-secondary); font-size: 0.875rem;">
+                        総回転数: <span id="totalSpins">0</span>回
+                    </div>
+                </div>
+
+                <!-- プリセットタブ -->
+                <div class="tab-content" id="tab-presets">
+                    <div class="mb-3">
+                        <input type="text" id="presetName" class="item-input w-full mb-2" placeholder="プリセット名">
+                        <button class="btn w-full" onclick="savePreset()">
+                            <i class="fas fa-save mr-2"></i>現在の設定を保存
+                        </button>
+                    </div>
+                    <div id="presetList" style="max-height: 200px; overflow-y: auto;"></div>
                 </div>
             </div>
         </div>
     </div>
 
+    <!-- モーダルオーバーレイ -->
+    <div class="modal-overlay" id="modalOverlay" onclick="hideResult()"></div>
+
     <!-- 結果表示モーダル -->
     <div id="resultDisplay" class="result-display">
-        <h2 class="text-2xl font-bold mb-4">結果</h2>
-        <p id="resultText" class="text-xl mb-4"></p>
-        <button onclick="hideResult()" class="spin-button w-full">閉じる</button>
+        <div style="font-size: 3rem; margin-bottom: 1rem;">🎉</div>
+        <h2 class="text-2xl font-bold mb-2">結果</h2>
+        <p id="resultText" class="text-xl mb-4" style="color: var(--primary-color); font-weight: bold;"></p>
+
+        <div class="share-buttons">
+            <button class="share-btn twitter" onclick="shareTwitter()" title="Twitterでシェア">
+                <i class="fab fa-twitter"></i>
+            </button>
+            <button class="share-btn line" onclick="shareLine()" title="LINEでシェア">
+                <i class="fab fa-line"></i>
+            </button>
+            <button class="share-btn copy" onclick="copyResult()" title="コピー">
+                <i class="fas fa-copy"></i>
+            </button>
+        </div>
+
+        <button onclick="hideResult()" class="btn w-full mt-4">閉じる</button>
     </div>
+
+    <!-- キーボードヒント -->
+    <div class="keyboard-hint">
+        <i class="fas fa-keyboard mr-1"></i> Space: 回転 | D: ダークモード | A: 追加
+    </div>
+
     <script>
         class RouletteApp {
             constructor() {
                 this.canvas = document.getElementById('rouletteCanvas');
                 this.ctx = this.canvas.getContext('2d');
                 this.items = [
-                    { text: '項目1', weight: 1 },
-                    { text: '項目2', weight: 1 },
-                    { text: '項目3', weight: 1 }
+                    { text: '項目1', weight: 1, color: '#f9a8d4' },
+                    { text: '項目2', weight: 1, color: '#93c5fd' },
+                    { text: '項目3', weight: 1, color: '#a5b4fc' }
                 ];
                 this.rotation = 0;
                 this.isSpinning = false;
                 this.history = [];
-                this.colors = ['#f9a8d4', '#93c5fd', '#a5b4fc', '#fecdd3'];
+                this.presets = [];
+                this.defaultColors = ['#f9a8d4', '#93c5fd', '#a5b4fc', '#fecdd3', '#bbf7d0', '#fde68a', '#c4b5fd', '#fdba74'];
+                this.lastResult = null;
 
+                // Settings
+                this.settings = {
+                    soundEnabled: false,
+                    confettiEnabled: true,
+                    vibrationEnabled: true,
+                    darkMode: false
+                };
+
+                this.resizeCanvas();
                 this.initializeEventListeners();
                 this.loadFromLocalStorage();
                 this.updateItemList();
                 this.draw();
+                this.initializeTabs();
+                this.updatePresetList();
+                this.applySettings();
+            }
+
+            resizeCanvas() {
+                const container = this.canvas.parentElement;
+                const size = Math.min(container.offsetWidth, container.offsetHeight);
+                this.canvas.width = size;
+                this.canvas.height = size;
             }
 
             initializeEventListeners() {
                 document.getElementById('spinButton').addEventListener('click', () => this.spin());
                 document.getElementById('addItemButton').addEventListener('click', () => this.addItem());
+                document.getElementById('themeToggle').addEventListener('click', () => this.toggleTheme());
+                document.getElementById('settingsToggle').addEventListener('click', () => toggleSettings());
 
-                // ルーレットクリックでもスピン開始
                 this.canvas.addEventListener('click', () => {
-                    if (!this.isSpinning) {
-                        this.spin();
+                    if (!this.isSpinning) this.spin();
+                });
+
+                // Keyboard shortcuts
+                document.addEventListener('keydown', (e) => {
+                    if (e.target.tagName === 'INPUT') return;
+
+                    switch(e.code) {
+                        case 'Space':
+                        case 'Enter':
+                            e.preventDefault();
+                            if (!this.isSpinning) this.spin();
+                            break;
+                        case 'KeyD':
+                            this.toggleTheme();
+                            break;
+                        case 'KeyA':
+                            this.addItem();
+                            break;
+                        case 'KeyR':
+                            if (confirm('すべての項目をリセットしますか？')) {
+                                this.items = [
+                                    { text: '項目1', weight: 1, color: '#f9a8d4' },
+                                    { text: '項目2', weight: 1, color: '#93c5fd' },
+                                    { text: '項目3', weight: 1, color: '#a5b4fc' }
+                                ];
+                                this.updateItemList();
+                                this.saveToLocalStorage();
+                            }
+                            break;
+                        case 'KeyS':
+                            toggleSettings();
+                            break;
                     }
                 });
+
+                // Resize handler
+                window.addEventListener('resize', () => {
+                    this.resizeCanvas();
+                    this.draw();
+                });
+            }
+
+            initializeTabs() {
+                const tabs = document.querySelectorAll('.tab');
+                tabs.forEach(tab => {
+                    tab.addEventListener('click', () => {
+                        tabs.forEach(t => t.classList.remove('active'));
+                        tab.classList.add('active');
+
+                        document.querySelectorAll('.tab-content').forEach(content => {
+                            content.classList.remove('active');
+                        });
+                        document.getElementById(`tab-${tab.dataset.tab}`).classList.add('active');
+
+                        if (tab.dataset.tab === 'stats') this.updateStats();
+                    });
+                });
+            }
+
+            toggleTheme() {
+                this.settings.darkMode = !this.settings.darkMode;
+                document.documentElement.setAttribute('data-theme', this.settings.darkMode ? 'dark' : 'light');
+                document.getElementById('themeToggle').innerHTML = this.settings.darkMode ?
+                    '<i class="fas fa-sun"></i>' : '<i class="fas fa-moon"></i>';
+                this.saveToLocalStorage();
+                this.draw();
+            }
+
+            applySettings() {
+                // Apply dark mode
+                if (this.settings.darkMode) {
+                    document.documentElement.setAttribute('data-theme', 'dark');
+                    document.getElementById('themeToggle').innerHTML = '<i class="fas fa-sun"></i>';
+                }
+
+                // Apply toggle states
+                document.getElementById('soundToggle').classList.toggle('active', this.settings.soundEnabled);
+                document.getElementById('confettiToggle').classList.toggle('active', this.settings.confettiEnabled);
+                document.getElementById('vibrationToggle').classList.toggle('active', this.settings.vibrationEnabled);
             }
 
             loadFromLocalStorage() {
                 try {
                     const savedItems = localStorage.getItem('rouletteItems');
                     const savedHistory = localStorage.getItem('rouletteHistory');
-                    
-                    if (savedItems) {
-                        this.items = JSON.parse(savedItems);
-                    }
+                    const savedPresets = localStorage.getItem('roulettePresets');
+                    const savedSettings = localStorage.getItem('rouletteSettings');
+
+                    if (savedItems) this.items = JSON.parse(savedItems);
                     if (savedHistory) {
                         this.history = JSON.parse(savedHistory);
                         this.updateHistory();
                     }
+                    if (savedPresets) this.presets = JSON.parse(savedPresets);
+                    if (savedSettings) this.settings = { ...this.settings, ...JSON.parse(savedSettings) };
                 } catch (e) {
                     console.error('データの読み込みに失敗しました:', e);
                 }
@@ -328,6 +862,8 @@
                 try {
                     localStorage.setItem('rouletteItems', JSON.stringify(this.items));
                     localStorage.setItem('rouletteHistory', JSON.stringify(this.history));
+                    localStorage.setItem('roulettePresets', JSON.stringify(this.presets));
+                    localStorage.setItem('rouletteSettings', JSON.stringify(this.settings));
                 } catch (e) {
                     console.error('データの保存に失敗しました:', e);
                 }
@@ -337,14 +873,21 @@
                 const itemList = document.getElementById('itemList');
                 itemList.innerHTML = this.items.map((item, index) => `
                     <div class="item-row">
-                        <input type="text" class="flex-1 weight-input" 
-                            value="${item.text}" 
-                            onchange="roulette.updateItemText(${index}, this.value)">
-                        <input type="number" class="weight-input" min="1" max="100" 
-                            value="${item.weight}" 
-                            onchange="roulette.updateItemWeight(${index}, this.value)">
-                        <button class="text-red-500 hover:text-red-700" 
-                            onclick="roulette.removeItem(${index})">×</button>
+                        <input type="color" class="color-input"
+                            value="${item.color || this.defaultColors[index % this.defaultColors.length]}"
+                            onchange="roulette.updateItemColor(${index}, this.value)"
+                            title="色を変更">
+                        <input type="text" class="item-input"
+                            value="${item.text}"
+                            onchange="roulette.updateItemText(${index}, this.value)"
+                            placeholder="項目名">
+                        <input type="number" class="weight-input" min="1" max="100"
+                            value="${item.weight}"
+                            onchange="roulette.updateItemWeight(${index}, this.value)"
+                            title="確率 (重み)">
+                        <button class="delete-btn" onclick="roulette.removeItem(${index})" title="削除">
+                            <i class="fas fa-times"></i>
+                        </button>
                     </div>
                 `).join('');
 
@@ -355,7 +898,13 @@
             updateTotalWeight() {
                 const total = this.items.reduce((sum, item) => sum + item.weight, 0);
                 const totalWeightDiv = document.getElementById('totalWeight');
-                totalWeightDiv.textContent = `合計項目数: ${total}`;
+
+                const percentages = this.items.map(item =>
+                    ((item.weight / total) * 100).toFixed(1)
+                );
+
+                totalWeightDiv.innerHTML = `合計: ${total} (${this.items.map((item, i) =>
+                    `${item.text}: ${percentages[i]}%`).join(', ')})`;
                 totalWeightDiv.classList.toggle('warning', total > 100);
             }
 
@@ -373,8 +922,15 @@
                 this.draw();
             }
 
+            updateItemColor(index, color) {
+                this.items[index].color = color;
+                this.saveToLocalStorage();
+                this.draw();
+            }
+
             addItem() {
-                this.items.push({ text: `項目${this.items.length + 1}`, weight: 1 });
+                const newColor = this.defaultColors[this.items.length % this.defaultColors.length];
+                this.items.push({ text: `項目${this.items.length + 1}`, weight: 1, color: newColor });
                 this.updateItemList();
                 this.saveToLocalStorage();
             }
@@ -398,63 +954,94 @@
 
                 this.ctx.clearRect(0, 0, width, height);
 
-                // 外枠を描画
+                // Draw outer ring
                 this.ctx.beginPath();
-                this.ctx.arc(centerX, centerY, radius + 2, 0, 2 * Math.PI);
-                this.ctx.fillStyle = '#ffffff';
+                this.ctx.arc(centerX, centerY, radius + 5, 0, 2 * Math.PI);
+                const gradient = this.ctx.createLinearGradient(0, 0, width, height);
+                gradient.addColorStop(0, '#f9a8d4');
+                gradient.addColorStop(1, '#93c5fd');
+                this.ctx.strokeStyle = gradient;
+                this.ctx.lineWidth = 8;
+                this.ctx.stroke();
+
+                // Draw white background
+                this.ctx.beginPath();
+                this.ctx.arc(centerX, centerY, radius, 0, 2 * Math.PI);
+                this.ctx.fillStyle = this.settings.darkMode ? '#2a2a4a' : '#ffffff';
                 this.ctx.shadowColor = 'rgba(0, 0, 0, 0.1)';
                 this.ctx.shadowBlur = 10;
                 this.ctx.fill();
                 this.ctx.shadowBlur = 0;
 
-                // 重みの合計を計算
                 const totalWeight = this.items.reduce((sum, item) => sum + item.weight, 0);
                 let currentAngle = this.rotation;
 
-                // セクションを描画
+                // Draw sections
                 this.items.forEach((item, index) => {
                     const sliceAngle = (2 * Math.PI * item.weight) / totalWeight;
                     const endAngle = currentAngle + sliceAngle;
 
-                    // セクションの描画
+                    // Section fill
                     this.ctx.beginPath();
                     this.ctx.moveTo(centerX, centerY);
-                    this.ctx.arc(centerX, centerY, radius, currentAngle, endAngle);
+                    this.ctx.arc(centerX, centerY, radius - 2, currentAngle, endAngle);
                     this.ctx.closePath();
-                    this.ctx.fillStyle = this.colors[index % this.colors.length];
+                    this.ctx.fillStyle = item.color || this.defaultColors[index % this.defaultColors.length];
                     this.ctx.fill();
 
-                    // 境界線の描画
+                    // Section border
                     this.ctx.beginPath();
                     this.ctx.moveTo(centerX, centerY);
-                    this.ctx.arc(centerX, centerY, radius, currentAngle, endAngle);
+                    this.ctx.lineTo(
+                        centerX + Math.cos(currentAngle) * radius,
+                        centerY + Math.sin(currentAngle) * radius
+                    );
                     this.ctx.strokeStyle = 'rgba(255, 255, 255, 0.8)';
                     this.ctx.lineWidth = 2;
                     this.ctx.stroke();
 
-                    // テキストの描画
+                    // Text
                     this.ctx.save();
                     this.ctx.translate(centerX, centerY);
                     this.ctx.rotate(currentAngle + sliceAngle / 2);
                     this.ctx.textAlign = 'right';
-                    this.ctx.fillStyle = '#4a044e';
-                    this.ctx.font = 'bold 16px "M PLUS Rounded 1c"';
+                    this.ctx.fillStyle = this.settings.darkMode ? '#ffffff' : '#4a044e';
+                    this.ctx.font = `bold ${Math.max(12, radius / 15)}px "M PLUS Rounded 1c"`;
                     this.ctx.shadowColor = 'rgba(255, 255, 255, 0.5)';
                     this.ctx.shadowBlur = 4;
-                    this.ctx.fillText(item.text, radius - 30, 6);
+
+                    // Truncate text if too long
+                    let displayText = item.text;
+                    if (displayText.length > 8) {
+                        displayText = displayText.substring(0, 7) + '...';
+                    }
+                    this.ctx.fillText(displayText, radius - 20, 5);
                     this.ctx.restore();
 
                     currentAngle = endAngle;
                 });
+
+                // Center circle
+                this.ctx.beginPath();
+                this.ctx.arc(centerX, centerY, radius * 0.15, 0, 2 * Math.PI);
+                const centerGradient = this.ctx.createRadialGradient(
+                    centerX, centerY, 0,
+                    centerX, centerY, radius * 0.15
+                );
+                centerGradient.addColorStop(0, '#ffffff');
+                centerGradient.addColorStop(1, '#f0f0f0');
+                this.ctx.fillStyle = centerGradient;
+                this.ctx.fill();
+                this.ctx.strokeStyle = gradient;
+                this.ctx.lineWidth = 3;
+                this.ctx.stroke();
             }
 
             getSelectedItem() {
                 const totalWeight = this.items.reduce((sum, item) => sum + item.weight, 0);
-                // 矢印は上部にあるため、π/2 を加算して位置を調整
                 const normalizedRotation = (((this.rotation + Math.PI / 2) % (2 * Math.PI)) + 2 * Math.PI) % (2 * Math.PI);
                 let currentAngle = 0;
 
-                // 逆順で検索（時計回りに描画されているため）
                 for (let i = this.items.length - 1; i >= 0; i--) {
                     const item = this.items[i];
                     const sliceAngle = (2 * Math.PI * item.weight) / totalWeight;
@@ -464,7 +1051,39 @@
                     currentAngle += sliceAngle;
                 }
 
-                return this.items[this.items.length - 1]; // フォールバック
+                return this.items[this.items.length - 1];
+            }
+
+            playSound(type) {
+                if (!this.settings.soundEnabled) return;
+
+                const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                const oscillator = audioContext.createOscillator();
+                const gainNode = audioContext.createGain();
+
+                oscillator.connect(gainNode);
+                gainNode.connect(audioContext.destination);
+
+                if (type === 'tick') {
+                    oscillator.frequency.value = 800;
+                    gainNode.gain.value = 0.1;
+                    oscillator.start();
+                    oscillator.stop(audioContext.currentTime + 0.05);
+                } else if (type === 'win') {
+                    oscillator.type = 'sine';
+                    oscillator.frequency.setValueAtTime(523.25, audioContext.currentTime);
+                    oscillator.frequency.setValueAtTime(659.25, audioContext.currentTime + 0.1);
+                    oscillator.frequency.setValueAtTime(783.99, audioContext.currentTime + 0.2);
+                    gainNode.gain.value = 0.3;
+                    oscillator.start();
+                    oscillator.stop(audioContext.currentTime + 0.4);
+                }
+            }
+
+            vibrate() {
+                if (this.settings.vibrationEnabled && navigator.vibrate) {
+                    navigator.vibrate(50);
+                }
             }
 
             spin() {
@@ -473,32 +1092,52 @@
                 this.isSpinning = true;
                 const spinButton = document.getElementById('spinButton');
                 spinButton.disabled = true;
-                document.querySelector('.pointer').classList.add('active');
+                spinButton.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>回転中...';
+                document.getElementById('pointer').classList.add('active');
 
-                const totalRotation = 2 * Math.PI * (8 + Math.random() * 4); // 8-12回転
-                const duration = 5000; // 5秒間
+                const totalRotation = 2 * Math.PI * (8 + Math.random() * 4);
+                const duration = 5000;
                 const startTime = performance.now();
                 const startRotation = this.rotation;
+                let lastTickAngle = startRotation;
 
                 const animate = (currentTime) => {
                     const elapsed = currentTime - startTime;
                     const progress = Math.min(elapsed / duration, 1);
-                    
-                    // イージング関数（より自然な減速）
+
                     const easeOut = t => 1 - Math.pow(1 - t, 3);
-                    
+
                     this.rotation = startRotation + totalRotation * easeOut(progress);
                     this.draw();
+
+                    // Tick sound
+                    if (this.rotation - lastTickAngle > Math.PI / 8) {
+                        this.playSound('tick');
+                        this.vibrate();
+                        lastTickAngle = this.rotation;
+                    }
 
                     if (progress < 1) {
                         requestAnimationFrame(animate);
                     } else {
                         this.isSpinning = false;
                         spinButton.disabled = false;
-                        document.querySelector('.pointer').classList.remove('active');
-                        
+                        spinButton.innerHTML = '<i class="fas fa-play mr-2"></i>回転開始';
+                        document.getElementById('pointer').classList.remove('active');
+
                         const selectedItem = this.getSelectedItem();
+                        this.lastResult = selectedItem;
                         this.addToHistory(selectedItem);
+                        this.playSound('win');
+
+                        if (this.settings.vibrationEnabled && navigator.vibrate) {
+                            navigator.vibrate([100, 50, 100, 50, 200]);
+                        }
+
+                        if (this.settings.confettiEnabled) {
+                            this.createConfetti();
+                        }
+
                         this.showResult(selectedItem);
                     }
                 };
@@ -506,11 +1145,38 @@
                 requestAnimationFrame(animate);
             }
 
+            createConfetti() {
+                const colors = ['#f9a8d4', '#93c5fd', '#a5b4fc', '#fecdd3', '#bbf7d0', '#fde68a'];
+
+                for (let i = 0; i < 50; i++) {
+                    setTimeout(() => {
+                        const confetti = document.createElement('div');
+                        confetti.className = 'confetti';
+                        confetti.style.left = Math.random() * window.innerWidth + 'px';
+                        confetti.style.top = '-10px';
+                        confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+                        confetti.style.borderRadius = Math.random() > 0.5 ? '50%' : '0';
+                        confetti.style.transform = `rotate(${Math.random() * 360}deg)`;
+                        document.body.appendChild(confetti);
+
+                        gsap.to(confetti, {
+                            y: window.innerHeight + 100,
+                            x: (Math.random() - 0.5) * 200,
+                            rotation: Math.random() * 720,
+                            duration: 2 + Math.random() * 2,
+                            ease: 'power1.out',
+                            onComplete: () => confetti.remove()
+                        });
+                    }, i * 30);
+                }
+            }
+
             addToHistory(item) {
                 const now = new Date();
                 this.history.unshift({
                     item: item.text,
                     weight: item.weight,
+                    color: item.color,
                     timestamp: now.toLocaleString()
                 });
 
@@ -524,48 +1190,220 @@
 
             updateHistory() {
                 const historyList = document.getElementById('historyList');
+                if (this.history.length === 0) {
+                    historyList.innerHTML = '<p style="text-align: center; color: var(--text-secondary); padding: 2rem;">履歴がありません</p>';
+                    return;
+                }
+
                 historyList.innerHTML = this.history
-                    .slice(0, 10)
-                    .map(record => `
+                    .slice(0, 20)
+                    .map((record, index) => `
                         <div class="history-item">
-                            <div class="font-semibold">${record.item}</div>
-                            <div class="text-sm text-gray-500">
-                                重み: ${record.weight} - ${record.timestamp}
+                            <div style="display: flex; align-items: center; gap: 0.5rem;">
+                                <span style="color: var(--text-secondary); font-size: 0.75rem;">#${index + 1}</span>
+                                <span style="width: 12px; height: 12px; border-radius: 50%; background: ${record.color || '#ccc'};"></span>
+                                <span class="font-semibold">${record.item}</span>
+                            </div>
+                            <div class="text-sm" style="color: var(--text-secondary);">
+                                ${record.timestamp}
                             </div>
                         </div>
                     `)
                     .join('');
             }
 
+            updateStats() {
+                const statsList = document.getElementById('statsList');
+                const totalSpins = this.history.length;
+                document.getElementById('totalSpins').textContent = totalSpins;
+
+                if (totalSpins === 0) {
+                    statsList.innerHTML = '<p style="text-align: center; color: var(--text-secondary); padding: 2rem;">統計データがありません</p>';
+                    return;
+                }
+
+                // Count occurrences
+                const counts = {};
+                this.history.forEach(record => {
+                    counts[record.item] = (counts[record.item] || 0) + 1;
+                });
+
+                // Sort by count
+                const sorted = Object.entries(counts).sort((a, b) => b[1] - a[1]);
+
+                statsList.innerHTML = sorted.map(([item, count]) => {
+                    const percentage = ((count / totalSpins) * 100).toFixed(1);
+                    const itemData = this.items.find(i => i.text === item);
+                    const color = itemData?.color || '#ccc';
+
+                    return `
+                        <div class="stat-card">
+                            <div style="display: flex; align-items: center; gap: 0.5rem;">
+                                <span style="width: 16px; height: 16px; border-radius: 50%; background: ${color};"></span>
+                                <span style="font-weight: 600;">${item}</span>
+                            </div>
+                            <div style="text-align: right;">
+                                <div style="font-weight: bold;">${count}回</div>
+                                <div style="font-size: 0.75rem; color: var(--text-secondary);">${percentage}%</div>
+                            </div>
+                        </div>
+                        <div class="stat-bar" style="margin-top: -0.25rem; margin-bottom: 0.75rem;">
+                            <div class="stat-bar-fill" style="width: ${percentage}%; background: ${color};"></div>
+                        </div>
+                    `;
+                }).join('');
+            }
+
+            savePreset() {
+                const nameInput = document.getElementById('presetName');
+                const name = nameInput.value.trim();
+
+                if (!name) {
+                    alert('プリセット名を入力してください');
+                    return;
+                }
+
+                this.presets.push({
+                    name,
+                    items: JSON.parse(JSON.stringify(this.items)),
+                    createdAt: new Date().toLocaleString()
+                });
+
+                nameInput.value = '';
+                this.saveToLocalStorage();
+                this.updatePresetList();
+            }
+
+            loadPreset(index) {
+                const preset = this.presets[index];
+                this.items = JSON.parse(JSON.stringify(preset.items));
+                this.updateItemList();
+                this.saveToLocalStorage();
+            }
+
+            deletePreset(index) {
+                if (confirm('このプリセットを削除しますか？')) {
+                    this.presets.splice(index, 1);
+                    this.saveToLocalStorage();
+                    this.updatePresetList();
+                }
+            }
+
+            updatePresetList() {
+                const presetList = document.getElementById('presetList');
+
+                if (this.presets.length === 0) {
+                    presetList.innerHTML = '<p style="text-align: center; color: var(--text-secondary); padding: 2rem;">保存されたプリセットがありません</p>';
+                    return;
+                }
+
+                presetList.innerHTML = this.presets.map((preset, index) => `
+                    <div class="preset-item" onclick="roulette.loadPreset(${index})">
+                        <div>
+                            <div style="font-weight: 600;">${preset.name}</div>
+                            <div style="font-size: 0.75rem; color: var(--text-secondary);">
+                                ${preset.items.length}項目 | ${preset.createdAt}
+                            </div>
+                        </div>
+                        <button class="delete-btn" onclick="event.stopPropagation(); roulette.deletePreset(${index})">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </div>
+                `).join('');
+            }
+
             showResult(item) {
                 const resultDisplay = document.getElementById('resultDisplay');
+                const modalOverlay = document.getElementById('modalOverlay');
                 const resultText = document.getElementById('resultText');
-                resultText.textContent = `当選項目: ${item.text} `;
+                resultText.textContent = item.text;
+                resultText.style.color = item.color || '#f9a8d4';
                 resultDisplay.classList.add('show');
+                modalOverlay.classList.add('show');
             }
         }
 
+        // Global functions
         function hideResult() {
-            const resultDisplay = document.getElementById('resultDisplay');
-            resultDisplay.classList.remove('show');
+            document.getElementById('resultDisplay').classList.remove('show');
+            document.getElementById('modalOverlay').classList.remove('show');
         }
 
-        // グローバル変数としてインスタンスを作成（HTML内のイベントハンドラから参照するため）
+        function toggleSettings() {
+            document.getElementById('settingsPanel').classList.toggle('open');
+        }
+
+        function toggleSound() {
+            roulette.settings.soundEnabled = !roulette.settings.soundEnabled;
+            document.getElementById('soundToggle').classList.toggle('active');
+            roulette.saveToLocalStorage();
+        }
+
+        function toggleConfetti() {
+            roulette.settings.confettiEnabled = !roulette.settings.confettiEnabled;
+            document.getElementById('confettiToggle').classList.toggle('active');
+            roulette.saveToLocalStorage();
+        }
+
+        function toggleVibration() {
+            roulette.settings.vibrationEnabled = !roulette.settings.vibrationEnabled;
+            document.getElementById('vibrationToggle').classList.toggle('active');
+            roulette.saveToLocalStorage();
+        }
+
+        function clearHistory() {
+            if (confirm('履歴をすべて削除しますか？')) {
+                roulette.history = [];
+                roulette.updateHistory();
+                roulette.saveToLocalStorage();
+            }
+        }
+
+        function resetAll() {
+            if (confirm('すべての設定と履歴をリセットしますか？')) {
+                localStorage.clear();
+                location.reload();
+            }
+        }
+
+        function shareTwitter() {
+            if (!roulette.lastResult) return;
+            const text = `ルーレットの結果: ${roulette.lastResult.text}`;
+            const url = encodeURIComponent(window.location.href);
+            window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${url}`, '_blank');
+        }
+
+        function shareLine() {
+            if (!roulette.lastResult) return;
+            const text = `ルーレットの結果: ${roulette.lastResult.text}\n${window.location.href}`;
+            window.open(`https://social-plugins.line.me/lineit/share?text=${encodeURIComponent(text)}`, '_blank');
+        }
+
+        function copyResult() {
+            if (!roulette.lastResult) return;
+            const text = `ルーレットの結果: ${roulette.lastResult.text}`;
+            navigator.clipboard.writeText(text).then(() => {
+                alert('コピーしました！');
+            });
+        }
+
+        // Initialize
         let roulette;
         window.addEventListener('load', () => {
             roulette = new RouletteApp();
         });
     </script>
-</body>
-    <!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-2CRWEKC784"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
 
-  gtag('config', 'G-2CRWEKC784');
-</script>
-    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1870865959509551"
-     crossorigin="anonymous"></script>
+    <!-- Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-2CRWEKC784"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'G-2CRWEKC784');
+    </script>
+
+    <!-- Google AdSense -->
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1870865959509551" crossorigin="anonymous"></script>
+</body>
 </html>
