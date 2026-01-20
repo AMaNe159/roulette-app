@@ -18,286 +18,657 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@300;400;500;700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@300;400;500;700;800&family=Poppins:wght@400;500;600;700&display=swap');
 
         :root {
-            --primary-color: #f9a8d4;
-            --secondary-color: #93c5fd;
-            --accent-color: #a5b4fc;
-            --background-color: #faf5ff;
-            --card-background: rgba(255, 255, 255, 0.85);
-            --text-color: #4a044e;
+            --primary: #ec4899;
+            --primary-light: #f9a8d4;
+            --secondary: #8b5cf6;
+            --secondary-light: #c4b5fd;
+            --accent: #06b6d4;
+            --accent-light: #a5f3fc;
+            --bg-start: #fdf2f8;
+            --bg-mid: #faf5ff;
+            --bg-end: #ecfeff;
+            --card-bg: rgba(255, 255, 255, 0.7);
+            --card-border: rgba(255, 255, 255, 0.8);
+            --text-primary: #1f2937;
             --text-secondary: #6b7280;
-            --border-color: rgba(255, 255, 255, 0.2);
-            --shadow-color: rgba(31, 38, 135, 0.1);
-            --font-family: 'M PLUS Rounded 1c', sans-serif;
+            --shadow-color: rgba(236, 72, 153, 0.15);
         }
 
         [data-theme="dark"] {
-            --primary-color: #db7093;
-            --secondary-color: #6495ed;
-            --accent-color: #9370db;
-            --background-color: #1a1a2e;
-            --card-background: rgba(30, 30, 50, 0.9);
-            --text-color: #f0f0f0;
-            --text-secondary: #a0a0a0;
-            --border-color: rgba(100, 100, 150, 0.3);
-            --shadow-color: rgba(0, 0, 0, 0.3);
+            --primary: #f472b6;
+            --primary-light: #9d174d;
+            --secondary: #a78bfa;
+            --secondary-light: #5b21b6;
+            --accent: #22d3ee;
+            --accent-light: #164e63;
+            --bg-start: #0f0f1a;
+            --bg-mid: #1a1a2e;
+            --bg-end: #16213e;
+            --card-bg: rgba(30, 30, 50, 0.8);
+            --card-border: rgba(100, 100, 150, 0.3);
+            --text-primary: #f9fafb;
+            --text-secondary: #9ca3af;
+            --shadow-color: rgba(139, 92, 246, 0.2);
         }
 
         * {
             box-sizing: border-box;
-            transition: background-color 0.3s ease, color 0.3s ease;
+            margin: 0;
+            padding: 0;
         }
 
         body {
-            margin: 0;
-            padding: 0;
-            background-color: var(--background-color);
-            font-family: var(--font-family);
-            color: var(--text-color);
+            font-family: 'M PLUS Rounded 1c', 'Poppins', sans-serif;
+            background: linear-gradient(135deg, var(--bg-start) 0%, var(--bg-mid) 50%, var(--bg-end) 100%);
+            background-attachment: fixed;
             min-height: 100vh;
+            color: var(--text-primary);
+            overflow-x: hidden;
+            transition: all 0.5s ease;
         }
 
-        .glass-effect {
-            background: var(--card-background);
-            backdrop-filter: blur(10px);
-            border: 1px solid var(--border-color);
-            box-shadow: 0 8px 32px 0 var(--shadow-color);
-        }
-
-        .roulette-container {
-            position: relative;
-            width: min(400px, 90vw);
-            height: min(400px, 90vw);
-            transition: transform 0.3s ease;
-            cursor: pointer;
-            margin: 0 auto;
-        }
-
-        @media (min-width: 1024px) {
-            .roulette-container {
-                width: 450px;
-                height: 450px;
-            }
-        }
-
-        .roulette-container:hover {
-            transform: scale(1.02);
-        }
-
-        .roulette-content {
-            position: relative;
-            width: 100%;
-            height: 100%;
-        }
-
-        canvas {
-            position: absolute;
+        /* Animated background */
+        .bg-animation {
+            position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            border-radius: 50%;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-            transition: box-shadow 0.3s ease;
+            pointer-events: none;
+            z-index: -1;
+            overflow: hidden;
         }
 
-        .pointer {
+        .floating-shape {
             position: absolute;
-            top: -30px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 30px;
-            height: 50px;
-            background-color: #f43f5e;
-            clip-path: polygon(50% 100%, 0 0, 100% 0);
-            z-index: 10;
-            filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
-            transition: transform 0.3s ease;
-        }
-
-        .pointer::after {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 15px;
-            height: 15px;
-            background-color: #ffffff;
             border-radius: 50%;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+            filter: blur(60px);
+            opacity: 0.5;
+            animation: float 20s ease-in-out infinite;
         }
 
-        .pointer.active {
-            animation: pointerPulse 0.5s ease-in-out;
+        .shape-1 {
+            width: 400px;
+            height: 400px;
+            background: linear-gradient(135deg, var(--primary-light), var(--secondary-light));
+            top: -100px;
+            right: -100px;
+            animation-delay: 0s;
         }
 
-        @keyframes pointerPulse {
-            0% { transform: translateX(-50%) scale(1); }
-            50% { transform: translateX(-50%) scale(1.2); }
-            100% { transform: translateX(-50%) scale(1); }
+        .shape-2 {
+            width: 300px;
+            height: 300px;
+            background: linear-gradient(135deg, var(--accent-light), var(--primary-light));
+            bottom: -50px;
+            left: -50px;
+            animation-delay: -5s;
         }
 
-        .item-list {
-            max-height: 250px;
-            overflow-y: auto;
-            padding: 0.75rem;
-            background: var(--card-background);
-            border-radius: 1rem;
-            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.05);
+        .shape-3 {
+            width: 250px;
+            height: 250px;
+            background: linear-gradient(135deg, var(--secondary-light), var(--accent-light));
+            top: 50%;
+            left: 50%;
+            animation-delay: -10s;
         }
 
-        .item-row {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            padding: 0.5rem;
-            border-radius: 0.5rem;
-            background: var(--card-background);
-            margin-bottom: 0.5rem;
+        @keyframes float {
+            0%, 100% { transform: translate(0, 0) rotate(0deg) scale(1); }
+            25% { transform: translate(50px, 50px) rotate(90deg) scale(1.1); }
+            50% { transform: translate(0, 100px) rotate(180deg) scale(1); }
+            75% { transform: translate(-50px, 50px) rotate(270deg) scale(0.9); }
+        }
+
+        /* Glass card */
+        .glass-card {
+            background: var(--card-bg);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid var(--card-border);
+            border-radius: 24px;
+            box-shadow:
+                0 8px 32px var(--shadow-color),
+                inset 0 1px 0 rgba(255, 255, 255, 0.4);
             transition: all 0.3s ease;
-            flex-wrap: wrap;
         }
 
-        @media (min-width: 640px) {
-            .item-row {
-                flex-wrap: nowrap;
-                gap: 1rem;
+        .glass-card:hover {
+            box-shadow:
+                0 12px 48px var(--shadow-color),
+                inset 0 1px 0 rgba(255, 255, 255, 0.4);
+        }
+
+        /* Header */
+        .header {
+            text-align: center;
+            padding: 2rem 1rem;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, var(--primary), var(--secondary), var(--accent));
+            background-size: 200% 200%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: gradient-shift 5s ease infinite;
+            margin-bottom: 0.5rem;
+        }
+
+        .header p {
+            color: var(--text-secondary);
+            font-size: 1rem;
+        }
+
+        @keyframes gradient-shift {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+
+        /* Main container */
+        .main-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 1rem 2rem;
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 2rem;
+        }
+
+        @media (min-width: 1024px) {
+            .main-container {
+                grid-template-columns: 1fr 1fr;
+                align-items: start;
             }
         }
 
-        .item-row:hover {
-            transform: translateX(4px);
+        /* Roulette section */
+        .roulette-section {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 1.5rem;
         }
 
-        .item-input {
-            flex: 1;
-            min-width: 80px;
-            padding: 0.5rem;
-            border: 1px solid var(--border-color);
-            border-radius: 0.5rem;
-            text-align: left;
-            font-size: 0.875rem;
-            transition: all 0.3s ease;
-            background: var(--card-background);
-            color: var(--text-color);
+        .roulette-wrapper {
+            position: relative;
+            padding: 20px;
         }
 
-        .weight-input {
-            width: 60px;
-            padding: 0.5rem;
-            border: 1px solid var(--border-color);
-            border-radius: 0.5rem;
-            text-align: center;
-            font-size: 0.875rem;
-            transition: all 0.3s ease;
-            background: var(--card-background);
-            color: var(--text-color);
+        .roulette-glow {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 90%;
+            height: 90%;
+            background: radial-gradient(circle, var(--primary) 0%, transparent 70%);
+            opacity: 0.3;
+            filter: blur(40px);
+            border-radius: 50%;
+            transition: opacity 0.3s ease;
         }
 
-        .color-input {
-            width: 40px;
-            height: 36px;
-            padding: 2px;
-            border: none;
-            border-radius: 0.5rem;
+        .roulette-wrapper:hover .roulette-glow {
+            opacity: 0.5;
+        }
+
+        .roulette-container {
+            position: relative;
+            width: min(350px, 85vw);
+            height: min(350px, 85vw);
             cursor: pointer;
-            background: transparent;
         }
 
-        .item-input:focus, .weight-input:focus {
-            outline: none;
-            border-color: var(--primary-color);
-            box-shadow: 0 0 0 3px rgba(249, 168, 212, 0.2);
+        @media (min-width: 768px) {
+            .roulette-container {
+                width: 400px;
+                height: 400px;
+            }
         }
 
-        .btn {
-            background: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
-            color: white;
-            padding: 0.75rem 1.5rem;
-            border-radius: 1rem;
+        canvas {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            filter: drop-shadow(0 10px 30px var(--shadow-color));
+        }
+
+        .pointer-container {
+            position: absolute;
+            top: -15px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 10;
+        }
+
+        .pointer {
+            width: 0;
+            height: 0;
+            border-left: 20px solid transparent;
+            border-right: 20px solid transparent;
+            border-top: 45px solid var(--primary);
+            filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.3));
+            transition: transform 0.2s ease;
+        }
+
+        .pointer::before {
+            content: '';
+            position: absolute;
+            top: -42px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 16px;
+            height: 16px;
+            background: white;
+            border-radius: 50%;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        .pointer.bounce {
+            animation: pointer-bounce 0.3s ease;
+        }
+
+        @keyframes pointer-bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-5px); }
+        }
+
+        /* Spin button */
+        .spin-btn {
+            position: relative;
+            padding: 1rem 3rem;
+            font-size: 1.25rem;
             font-weight: 700;
-            font-size: 1rem;
+            color: white;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
             border: none;
+            border-radius: 50px;
             cursor: pointer;
+            overflow: hidden;
             transition: all 0.3s ease;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            text-transform: uppercase;
-            letter-spacing: 1px;
+            box-shadow: 0 4px 20px var(--shadow-color);
         }
 
-        .btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+        .spin-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            transition: left 0.5s ease;
         }
 
-        .btn:active {
-            transform: translateY(1px);
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        .spin-btn:hover::before {
+            left: 100%;
         }
 
-        .btn:disabled {
+        .spin-btn:hover {
+            transform: translateY(-3px) scale(1.02);
+            box-shadow: 0 8px 30px var(--shadow-color);
+        }
+
+        .spin-btn:active {
+            transform: translateY(0) scale(0.98);
+        }
+
+        .spin-btn:disabled {
             opacity: 0.7;
             cursor: not-allowed;
             transform: none;
         }
 
-        .btn-secondary {
-            background: var(--card-background);
-            color: var(--text-color);
-            border: 1px solid var(--border-color);
+        .spin-btn i {
+            margin-right: 0.5rem;
         }
 
-        .btn-small {
-            padding: 0.5rem 1rem;
-            font-size: 0.875rem;
+        /* Control panel */
+        .control-panel {
+            padding: 1.5rem;
         }
 
-        .btn-icon {
+        /* Tabs */
+        .tabs {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 1.5rem;
+            background: rgba(0, 0, 0, 0.05);
             padding: 0.5rem;
-            border-radius: 50%;
+            border-radius: 16px;
+        }
+
+        [data-theme="dark"] .tabs {
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .tab-btn {
+            flex: 1;
+            padding: 0.75rem 0.5rem;
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--text-secondary);
+            background: transparent;
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .tab-btn:hover {
+            color: var(--text-primary);
+            background: rgba(255, 255, 255, 0.5);
+        }
+
+        [data-theme="dark"] .tab-btn:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .tab-btn.active {
+            color: white;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            box-shadow: 0 4px 15px var(--shadow-color);
+        }
+
+        .tab-content {
+            display: none;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Item list */
+        .item-list {
+            max-height: 280px;
+            overflow-y: auto;
+            padding-right: 0.5rem;
+        }
+
+        .item-list::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .item-list::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        .item-list::-webkit-scrollbar-thumb {
+            background: var(--primary-light);
+            border-radius: 3px;
+        }
+
+        .item-row {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.75rem;
+            margin-bottom: 0.75rem;
+            background: rgba(255, 255, 255, 0.5);
+            border-radius: 16px;
+            border: 1px solid rgba(255, 255, 255, 0.6);
+            transition: all 0.3s ease;
+        }
+
+        [data-theme="dark"] .item-row {
+            background: rgba(255, 255, 255, 0.05);
+            border-color: rgba(255, 255, 255, 0.1);
+        }
+
+        .item-row:hover {
+            transform: translateX(5px);
+            box-shadow: 0 4px 15px var(--shadow-color);
+        }
+
+        .color-picker {
             width: 40px;
             height: 40px;
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .color-picker::-webkit-color-swatch-wrapper {
+            padding: 0;
+        }
+
+        .color-picker::-webkit-color-swatch {
+            border: none;
+            border-radius: 12px;
+        }
+
+        .item-input {
+            flex: 1;
+            min-width: 0;
+            padding: 0.75rem 1rem;
+            font-size: 0.95rem;
+            color: var(--text-primary);
+            background: rgba(255, 255, 255, 0.8);
+            border: 2px solid transparent;
+            border-radius: 12px;
+            transition: all 0.3s ease;
+        }
+
+        [data-theme="dark"] .item-input {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .item-input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 4px rgba(236, 72, 153, 0.1);
+        }
+
+        .weight-input {
+            width: 70px;
+            padding: 0.75rem;
+            font-size: 0.95rem;
+            font-weight: 600;
+            text-align: center;
+            color: var(--text-primary);
+            background: rgba(255, 255, 255, 0.8);
+            border: 2px solid transparent;
+            border-radius: 12px;
+            transition: all 0.3s ease;
+        }
+
+        [data-theme="dark"] .weight-input {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .weight-input:focus {
+            outline: none;
+            border-color: var(--secondary);
+            box-shadow: 0 0 0 4px rgba(139, 92, 246, 0.1);
+        }
+
+        .delete-btn {
+            width: 36px;
+            height: 36px;
             display: flex;
             align-items: center;
             justify-content: center;
+            color: #ef4444;
+            background: rgba(239, 68, 68, 0.1);
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
         }
 
-        .result-display {
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%) scale(0.9);
-            background: var(--card-background);
-            backdrop-filter: blur(20px);
-            padding: 2rem;
-            border-radius: 1.5rem;
-            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
-            z-index: 1000;
-            opacity: 0;
-            visibility: hidden;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            max-width: 90vw;
-            width: 400px;
-            text-align: center;
+        .delete-btn:hover {
+            color: white;
+            background: #ef4444;
+            transform: scale(1.1);
         }
 
-        .result-display.show {
-            opacity: 1;
-            visibility: visible;
-            transform: translate(-50%, -50%) scale(1);
+        /* Probability display */
+        .probability-display {
+            margin-top: 1rem;
+            padding: 1rem;
+            background: linear-gradient(135deg, rgba(236, 72, 153, 0.1), rgba(139, 92, 246, 0.1));
+            border-radius: 16px;
+            font-size: 0.9rem;
+            line-height: 1.6;
         }
 
+        /* Add button */
+        .add-btn {
+            width: 100%;
+            padding: 1rem;
+            margin-top: 1rem;
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--primary);
+            background: rgba(236, 72, 153, 0.1);
+            border: 2px dashed var(--primary-light);
+            border-radius: 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .add-btn:hover {
+            background: rgba(236, 72, 153, 0.2);
+            border-style: solid;
+            transform: translateY(-2px);
+        }
+
+        /* History & Stats */
+        .history-item, .stat-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 1rem;
+            margin-bottom: 0.75rem;
+            background: rgba(255, 255, 255, 0.5);
+            border-radius: 16px;
+            transition: all 0.3s ease;
+        }
+
+        [data-theme="dark"] .history-item,
+        [data-theme="dark"] .stat-item {
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .history-item:hover, .stat-item:hover {
+            transform: translateX(5px);
+        }
+
+        .color-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            margin-right: 0.75rem;
+        }
+
+        .stat-bar {
+            height: 8px;
+            background: rgba(0, 0, 0, 0.1);
+            border-radius: 4px;
+            overflow: hidden;
+            margin-top: 0.5rem;
+        }
+
+        [data-theme="dark"] .stat-bar {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .stat-bar-fill {
+            height: 100%;
+            border-radius: 4px;
+            transition: width 0.5s ease;
+        }
+
+        /* Preset */
+        .preset-input {
+            width: 100%;
+            padding: 1rem;
+            font-size: 1rem;
+            color: var(--text-primary);
+            background: rgba(255, 255, 255, 0.8);
+            border: 2px solid transparent;
+            border-radius: 16px;
+            margin-bottom: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        [data-theme="dark"] .preset-input {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .preset-input:focus {
+            outline: none;
+            border-color: var(--accent);
+        }
+
+        .save-preset-btn {
+            width: 100%;
+            padding: 1rem;
+            font-size: 1rem;
+            font-weight: 600;
+            color: white;
+            background: linear-gradient(135deg, var(--accent), var(--secondary));
+            border: none;
+            border-radius: 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .save-preset-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(6, 182, 212, 0.3);
+        }
+
+        .preset-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 1rem;
+            margin-top: 0.75rem;
+            background: rgba(255, 255, 255, 0.5);
+            border-radius: 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        [data-theme="dark"] .preset-item {
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .preset-item:hover {
+            transform: translateX(5px);
+            background: rgba(255, 255, 255, 0.8);
+        }
+
+        [data-theme="dark"] .preset-item:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        /* Result modal */
         .modal-overlay {
             position: fixed;
             top: 0;
             left: 0;
             right: 0;
             bottom: 0;
-            background: rgba(0, 0, 0, 0.5);
-            z-index: 999;
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(8px);
+            z-index: 1000;
             opacity: 0;
             visibility: hidden;
             transition: all 0.3s ease;
@@ -308,404 +679,530 @@
             visibility: visible;
         }
 
-        .total-weight {
-            background: var(--card-background);
-            padding: 0.75rem;
-            border-radius: 0.5rem;
+        .result-modal {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0.9);
+            width: min(400px, 90vw);
+            padding: 2.5rem;
+            background: var(--card-bg);
+            backdrop-filter: blur(20px);
+            border-radius: 32px;
             text-align: center;
-            font-weight: 500;
-            margin-top: 1rem;
-            transition: all 0.3s ease;
-        }
-
-        .total-weight.warning {
-            background: #fee2e2;
-            color: #991b1b;
-        }
-
-        .history-item {
-            padding: 0.5rem;
-            border-bottom: 1px solid var(--border-color);
-            font-size: 0.875rem;
-        }
-
-        .history-item:last-child {
-            border-bottom: none;
-        }
-
-        .theme-toggle {
-            position: fixed;
-            top: 1rem;
-            right: 1rem;
-            z-index: 100;
-        }
-
-        .settings-toggle {
-            position: fixed;
-            top: 1rem;
-            right: 4rem;
-            z-index: 100;
-        }
-
-        .tab-container {
-            display: flex;
-            gap: 0.5rem;
-            margin-bottom: 1rem;
-        }
-
-        .tab {
-            flex: 1;
-            padding: 0.75rem;
-            text-align: center;
-            border-radius: 0.5rem;
-            cursor: pointer;
-            background: var(--card-background);
-            border: 1px solid var(--border-color);
-            transition: all 0.3s ease;
-            font-weight: 500;
-        }
-
-        .tab.active {
-            background: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
-            color: white;
-            border-color: transparent;
-        }
-
-        .tab-content {
-            display: none;
-        }
-
-        .tab-content.active {
-            display: block;
-        }
-
-        .stat-card {
-            background: var(--card-background);
-            padding: 1rem;
-            border-radius: 0.75rem;
-            margin-bottom: 0.5rem;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .stat-bar {
-            height: 8px;
-            background: var(--border-color);
-            border-radius: 4px;
-            overflow: hidden;
-            margin-top: 0.5rem;
-        }
-
-        .stat-bar-fill {
-            height: 100%;
-            border-radius: 4px;
-            transition: width 0.5s ease;
-        }
-
-        .preset-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 0.75rem;
-            background: var(--card-background);
-            border-radius: 0.5rem;
-            margin-bottom: 0.5rem;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-
-        .preset-item:hover {
-            transform: translateX(4px);
-        }
-
-        .confetti {
-            position: fixed;
-            width: 10px;
-            height: 10px;
-            pointer-events: none;
             z-index: 1001;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        .result-modal.show {
+            opacity: 1;
+            visibility: visible;
+            transform: translate(-50%, -50%) scale(1);
+        }
+
+        .result-emoji {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+            animation: bounce 0.6s ease infinite;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .result-title {
+            font-size: 1.25rem;
+            color: var(--text-secondary);
+            margin-bottom: 0.5rem;
+        }
+
+        .result-text {
+            font-size: 2rem;
+            font-weight: 800;
+            margin-bottom: 1.5rem;
         }
 
         .share-buttons {
             display: flex;
-            gap: 0.5rem;
             justify-content: center;
-            margin-top: 1rem;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
         }
 
         .share-btn {
             width: 50px;
             height: 50px;
-            border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            color: white;
             font-size: 1.25rem;
-            cursor: pointer;
-            transition: transform 0.3s ease;
+            color: white;
             border: none;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: all 0.3s ease;
         }
 
         .share-btn:hover {
+            transform: translateY(-3px) scale(1.1);
+        }
+
+        .share-btn.twitter { background: linear-gradient(135deg, #1da1f2, #0d8ecf); }
+        .share-btn.line { background: linear-gradient(135deg, #00b900, #009900); }
+        .share-btn.copy { background: linear-gradient(135deg, #6b7280, #4b5563); }
+
+        .close-btn {
+            width: 100%;
+            padding: 1rem;
+            font-size: 1rem;
+            font-weight: 600;
+            color: white;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            border: none;
+            border-radius: 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .close-btn:hover {
+            transform: translateY(-2px);
+        }
+
+        /* Settings */
+        .settings-btn {
+            position: fixed;
+            top: 1rem;
+            right: 1rem;
+            width: 50px;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.25rem;
+            color: var(--text-primary);
+            background: var(--card-bg);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--card-border);
+            border-radius: 50%;
+            cursor: pointer;
+            z-index: 100;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px var(--shadow-color);
+        }
+
+        .settings-btn:hover {
+            transform: rotate(90deg) scale(1.1);
+        }
+
+        .theme-btn {
+            position: fixed;
+            top: 1rem;
+            right: 4.5rem;
+            width: 50px;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.25rem;
+            color: var(--text-primary);
+            background: var(--card-bg);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--card-border);
+            border-radius: 50%;
+            cursor: pointer;
+            z-index: 100;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px var(--shadow-color);
+        }
+
+        .theme-btn:hover {
             transform: scale(1.1);
         }
 
-        .share-btn.twitter { background: #1da1f2; }
-        .share-btn.line { background: #00b900; }
-        .share-btn.copy { background: #6b7280; }
-
-        .keyboard-hint {
-            position: fixed;
-            bottom: 1rem;
-            left: 1rem;
-            font-size: 0.75rem;
-            color: var(--text-secondary);
-            background: var(--card-background);
-            padding: 0.5rem 1rem;
-            border-radius: 0.5rem;
-            opacity: 0.7;
-        }
-
-        @media (max-width: 640px) {
-            .keyboard-hint {
-                display: none;
-            }
-        }
-
+        /* Settings panel */
         .settings-panel {
             position: fixed;
             top: 0;
             right: -350px;
             width: 320px;
             height: 100vh;
-            background: var(--card-background);
+            padding: 2rem;
+            background: var(--card-bg);
             backdrop-filter: blur(20px);
+            border-left: 1px solid var(--card-border);
             z-index: 1000;
-            padding: 1.5rem;
-            transition: right 0.3s ease;
             overflow-y: auto;
-            box-shadow: -4px 0 20px rgba(0, 0, 0, 0.1);
+            transition: right 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: -10px 0 40px var(--shadow-color);
         }
 
         .settings-panel.open {
             right: 0;
         }
 
+        .settings-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+
+        .settings-header h2 {
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+
+        .settings-close {
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-secondary);
+            background: transparent;
+            border: none;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .settings-close:hover {
+            color: var(--text-primary);
+            background: rgba(0, 0, 0, 0.05);
+        }
+
         .setting-item {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 1rem 0;
-            border-bottom: 1px solid var(--border-color);
+            padding: 1.25rem 0;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
         }
 
-        .toggle-switch {
+        [data-theme="dark"] .setting-item {
+            border-color: rgba(255, 255, 255, 0.05);
+        }
+
+        .toggle {
             position: relative;
-            width: 50px;
-            height: 26px;
-            background: var(--border-color);
-            border-radius: 13px;
+            width: 56px;
+            height: 30px;
+            background: rgba(0, 0, 0, 0.1);
+            border-radius: 15px;
             cursor: pointer;
-            transition: background 0.3s ease;
+            transition: all 0.3s ease;
         }
 
-        .toggle-switch.active {
-            background: var(--primary-color);
+        [data-theme="dark"] .toggle {
+            background: rgba(255, 255, 255, 0.1);
         }
 
-        .toggle-switch::after {
+        .toggle.active {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+        }
+
+        .toggle::after {
             content: '';
             position: absolute;
             top: 3px;
             left: 3px;
-            width: 20px;
-            height: 20px;
+            width: 24px;
+            height: 24px;
             background: white;
             border-radius: 50%;
-            transition: left 0.3s ease;
-        }
-
-        .toggle-switch.active::after {
-            left: 27px;
-        }
-
-        .delete-btn {
-            background: #ef4444;
-            color: white;
-            border: none;
-            width: 30px;
-            height: 30px;
-            border-radius: 50%;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
             transition: all 0.3s ease;
         }
 
-        .delete-btn:hover {
-            background: #dc2626;
-            transform: scale(1.1);
+        .toggle.active::after {
+            left: 29px;
         }
 
-        @media (max-width: 1024px) {
-            .main-grid {
-                grid-template-columns: 1fr !important;
+        .shortcuts-section {
+            margin-top: 2rem;
+            padding-top: 1rem;
+        }
+
+        .shortcuts-section h3 {
+            font-size: 1rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            color: var(--text-secondary);
+        }
+
+        .shortcut {
+            display: flex;
+            justify-content: space-between;
+            padding: 0.5rem 0;
+            font-size: 0.9rem;
+        }
+
+        .shortcut kbd {
+            padding: 0.25rem 0.5rem;
+            background: rgba(0, 0, 0, 0.05);
+            border-radius: 6px;
+            font-family: monospace;
+        }
+
+        [data-theme="dark"] .shortcut kbd {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .reset-btn {
+            width: 100%;
+            margin-top: 2rem;
+            padding: 1rem;
+            font-size: 1rem;
+            font-weight: 600;
+            color: #ef4444;
+            background: rgba(239, 68, 68, 0.1);
+            border: none;
+            border-radius: 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .reset-btn:hover {
+            background: rgba(239, 68, 68, 0.2);
+        }
+
+        /* Keyboard hint */
+        .keyboard-hint {
+            position: fixed;
+            bottom: 1rem;
+            left: 1rem;
+            padding: 0.75rem 1rem;
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            background: var(--card-bg);
+            backdrop-filter: blur(10px);
+            border-radius: 12px;
+            opacity: 0.8;
+            z-index: 50;
+        }
+
+        @media (max-width: 768px) {
+            .keyboard-hint {
+                display: none;
             }
+        }
+
+        /* Confetti */
+        .confetti {
+            position: fixed;
+            width: 10px;
+            height: 10px;
+            pointer-events: none;
+            z-index: 1002;
+        }
+
+        /* Empty state */
+        .empty-state {
+            text-align: center;
+            padding: 3rem 1rem;
+            color: var(--text-secondary);
+        }
+
+        .empty-state i {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            opacity: 0.3;
+        }
+
+        /* Secondary button */
+        .secondary-btn {
+            width: 100%;
+            margin-top: 1rem;
+            padding: 0.75rem;
+            font-size: 0.9rem;
+            font-weight: 500;
+            color: var(--text-secondary);
+            background: rgba(0, 0, 0, 0.05);
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        [data-theme="dark"] .secondary-btn {
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .secondary-btn:hover {
+            background: rgba(0, 0, 0, 0.1);
+        }
+
+        [data-theme="dark"] .secondary-btn:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        /* Scrollbar for settings */
+        .settings-panel::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .settings-panel::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        .settings-panel::-webkit-scrollbar-thumb {
+            background: var(--primary-light);
+            border-radius: 3px;
         }
     </style>
 </head>
-<body class="p-4 md:p-6">
-    <!-- Theme Toggle -->
-    <button class="theme-toggle btn btn-icon btn-secondary" id="themeToggle" title="ダークモード切替 (D)">
+<body>
+    <!-- Animated background -->
+    <div class="bg-animation">
+        <div class="floating-shape shape-1"></div>
+        <div class="floating-shape shape-2"></div>
+        <div class="floating-shape shape-3"></div>
+    </div>
+
+    <!-- Theme toggle -->
+    <button class="theme-btn" id="themeBtn" title="テーマ切替 (D)">
         <i class="fas fa-moon"></i>
     </button>
 
-    <!-- Settings Toggle -->
-    <button class="settings-toggle btn btn-icon btn-secondary" id="settingsToggle" title="設定">
+    <!-- Settings button -->
+    <button class="settings-btn" id="settingsBtn" title="設定 (S)">
         <i class="fas fa-cog"></i>
     </button>
 
-    <!-- Settings Panel -->
+    <!-- Settings panel -->
     <div class="settings-panel" id="settingsPanel">
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
-            <h2 style="font-size: 1.25rem; font-weight: bold;">設定</h2>
-            <button class="btn btn-icon btn-secondary" onclick="toggleSettings()">
+        <div class="settings-header">
+            <h2>設定</h2>
+            <button class="settings-close" onclick="toggleSettings()">
                 <i class="fas fa-times"></i>
             </button>
         </div>
 
         <div class="setting-item">
             <span>サウンド</span>
-            <div class="toggle-switch" id="soundToggle" onclick="toggleSound()"></div>
+            <div class="toggle" id="soundToggle" onclick="toggleSound()"></div>
         </div>
 
         <div class="setting-item">
-            <span>紙吹雪エフェクト</span>
-            <div class="toggle-switch active" id="confettiToggle" onclick="toggleConfetti()"></div>
+            <span>紙吹雪</span>
+            <div class="toggle active" id="confettiToggle" onclick="toggleConfetti()"></div>
         </div>
 
         <div class="setting-item">
-            <span>振動 (モバイル)</span>
-            <div class="toggle-switch active" id="vibrationToggle" onclick="toggleVibration()"></div>
+            <span>振動</span>
+            <div class="toggle active" id="vibrationToggle" onclick="toggleVibration()"></div>
         </div>
 
-        <div style="margin-top: 2rem;">
-            <h3 style="font-weight: 600; margin-bottom: 1rem;">キーボードショートカット</h3>
-            <div style="font-size: 0.875rem; color: var(--text-secondary);">
-                <p><strong>Space / Enter</strong> - 回転開始</p>
-                <p><strong>D</strong> - ダークモード切替</p>
-                <p><strong>A</strong> - 項目追加</p>
-                <p><strong>R</strong> - リセット</p>
-                <p><strong>S</strong> - 設定パネル</p>
-            </div>
+        <div class="shortcuts-section">
+            <h3>キーボードショートカット</h3>
+            <div class="shortcut"><span>回転</span><kbd>Space</kbd></div>
+            <div class="shortcut"><span>テーマ切替</span><kbd>D</kbd></div>
+            <div class="shortcut"><span>項目追加</span><kbd>A</kbd></div>
+            <div class="shortcut"><span>設定</span><kbd>S</kbd></div>
         </div>
 
-        <div style="margin-top: 2rem;">
-            <button class="btn btn-secondary w-full" onclick="resetAll()">
-                <i class="fas fa-trash-alt mr-2"></i>すべてリセット
-            </button>
-        </div>
+        <button class="reset-btn" onclick="resetAll()">
+            <i class="fas fa-trash-alt"></i> すべてリセット
+        </button>
     </div>
 
-    <div class="max-w-7xl mx-auto">
-        <header class="mb-6 text-center md:text-left">
-            <h1 class="text-3xl md:text-4xl font-bold mb-2">ルーレット</h1>
-            <p style="color: var(--text-secondary);">確率を調整できるカスタマイズ可能なルーレットアプリ</p>
-        </header>
+    <!-- Header -->
+    <header class="header">
+        <h1>ルーレット</h1>
+        <p>確率を調整できるカスタマイズ可能なルーレット</p>
+    </header>
 
-        <div class="main-grid grid grid-cols-1 lg:grid-cols-2 gap-6">
-            <!-- ルーレットセクション -->
-            <div class="flex flex-col items-center">
-                <div class="roulette-container mb-4">
-                    <div class="roulette-content">
-                        <canvas id="rouletteCanvas"></canvas>
+    <!-- Main content -->
+    <main class="main-container">
+        <!-- Roulette section -->
+        <section class="roulette-section">
+            <div class="roulette-wrapper">
+                <div class="roulette-glow"></div>
+                <div class="roulette-container" id="rouletteContainer">
+                    <canvas id="rouletteCanvas"></canvas>
+                    <div class="pointer-container">
                         <div class="pointer" id="pointer"></div>
                     </div>
                 </div>
-                <button id="spinButton" class="btn" style="font-size: 1.25rem; padding: 1rem 2.5rem;">
-                    <i class="fas fa-play mr-2"></i>回転開始
+            </div>
+            <button class="spin-btn" id="spinBtn">
+                <i class="fas fa-play"></i> 回転開始
+            </button>
+        </section>
+
+        <!-- Control panel -->
+        <section class="glass-card control-panel">
+            <div class="tabs">
+                <button class="tab-btn active" data-tab="items">項目設定</button>
+                <button class="tab-btn" data-tab="history">履歴</button>
+                <button class="tab-btn" data-tab="stats">統計</button>
+                <button class="tab-btn" data-tab="presets">保存</button>
+            </div>
+
+            <!-- Items tab -->
+            <div class="tab-content active" id="tab-items">
+                <div class="item-list" id="itemList"></div>
+                <div class="probability-display" id="probabilityDisplay"></div>
+                <button class="add-btn" id="addBtn">
+                    <i class="fas fa-plus"></i> 項目を追加
                 </button>
             </div>
 
-            <!-- コントロールセクション -->
-            <div class="controls-section glass-effect rounded-2xl p-4 md:p-6">
-                <!-- タブ -->
-                <div class="tab-container">
-                    <div class="tab active" data-tab="items">項目設定</div>
-                    <div class="tab" data-tab="history">履歴</div>
-                    <div class="tab" data-tab="stats">統計</div>
-                    <div class="tab" data-tab="presets">プリセット</div>
-                </div>
+            <!-- History tab -->
+            <div class="tab-content" id="tab-history">
+                <div id="historyList"></div>
+                <button class="secondary-btn" onclick="clearHistory()">
+                    <i class="fas fa-trash"></i> 履歴をクリア
+                </button>
+            </div>
 
-                <!-- 項目設定タブ -->
-                <div class="tab-content active" id="tab-items">
-                    <div class="item-list" id="itemList"></div>
-                    <div class="total-weight mt-3" id="totalWeight">合計確率: 0%</div>
-                    <button id="addItemButton" class="btn w-full mt-3">
-                        <i class="fas fa-plus mr-2"></i>項目を追加
-                    </button>
-                </div>
-
-                <!-- 履歴タブ -->
-                <div class="tab-content" id="tab-history">
-                    <div id="historyList" style="max-height: 300px; overflow-y: auto;"></div>
-                    <button class="btn btn-secondary w-full mt-3" onclick="clearHistory()">
-                        <i class="fas fa-trash mr-2"></i>履歴をクリア
-                    </button>
-                </div>
-
-                <!-- 統計タブ -->
-                <div class="tab-content" id="tab-stats">
-                    <div id="statsList"></div>
-                    <div class="mt-3" style="text-align: center; color: var(--text-secondary); font-size: 0.875rem;">
-                        総回転数: <span id="totalSpins">0</span>回
-                    </div>
-                </div>
-
-                <!-- プリセットタブ -->
-                <div class="tab-content" id="tab-presets">
-                    <div class="mb-3">
-                        <input type="text" id="presetName" class="item-input w-full mb-2" placeholder="プリセット名">
-                        <button class="btn w-full" onclick="savePreset()">
-                            <i class="fas fa-save mr-2"></i>現在の設定を保存
-                        </button>
-                    </div>
-                    <div id="presetList" style="max-height: 200px; overflow-y: auto;"></div>
+            <!-- Stats tab -->
+            <div class="tab-content" id="tab-stats">
+                <div id="statsList"></div>
+                <div style="text-align: center; margin-top: 1rem; color: var(--text-secondary);">
+                    総回転数: <strong id="totalSpins">0</strong>回
                 </div>
             </div>
-        </div>
-    </div>
 
-    <!-- モーダルオーバーレイ -->
+            <!-- Presets tab -->
+            <div class="tab-content" id="tab-presets">
+                <input type="text" class="preset-input" id="presetName" placeholder="プリセット名を入力...">
+                <button class="save-preset-btn" onclick="savePreset()">
+                    <i class="fas fa-save"></i> 現在の設定を保存
+                </button>
+                <div id="presetList"></div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Modal overlay -->
     <div class="modal-overlay" id="modalOverlay" onclick="hideResult()"></div>
 
-    <!-- 結果表示モーダル -->
-    <div id="resultDisplay" class="result-display">
-        <div style="font-size: 3rem; margin-bottom: 1rem;">🎉</div>
-        <h2 class="text-2xl font-bold mb-2">結果</h2>
-        <p id="resultText" class="text-xl mb-4" style="color: var(--primary-color); font-weight: bold;"></p>
-
+    <!-- Result modal -->
+    <div class="result-modal" id="resultModal">
+        <div class="result-emoji">🎉</div>
+        <div class="result-title">結果発表</div>
+        <div class="result-text" id="resultText"></div>
         <div class="share-buttons">
-            <button class="share-btn twitter" onclick="shareTwitter()" title="Twitterでシェア">
+            <button class="share-btn twitter" onclick="shareTwitter()" title="Twitter">
                 <i class="fab fa-twitter"></i>
             </button>
-            <button class="share-btn line" onclick="shareLine()" title="LINEでシェア">
+            <button class="share-btn line" onclick="shareLine()" title="LINE">
                 <i class="fab fa-line"></i>
             </button>
             <button class="share-btn copy" onclick="copyResult()" title="コピー">
                 <i class="fas fa-copy"></i>
             </button>
         </div>
-
-        <button onclick="hideResult()" class="btn w-full mt-4">閉じる</button>
+        <button class="close-btn" onclick="hideResult()">閉じる</button>
     </div>
 
-    <!-- キーボードヒント -->
+    <!-- Keyboard hint -->
     <div class="keyboard-hint">
-        <i class="fas fa-keyboard mr-1"></i> Space: 回転 | D: ダークモード | A: 追加
+        <i class="fas fa-keyboard"></i> Space: 回転 | D: テーマ | A: 追加
     </div>
 
     <script>
@@ -714,18 +1211,20 @@
                 this.canvas = document.getElementById('rouletteCanvas');
                 this.ctx = this.canvas.getContext('2d');
                 this.items = [
-                    { text: '項目1', weight: 1, color: '#f9a8d4' },
-                    { text: '項目2', weight: 1, color: '#93c5fd' },
-                    { text: '項目3', weight: 1, color: '#a5b4fc' }
+                    { text: '項目1', weight: 1, color: '#f472b6' },
+                    { text: '項目2', weight: 1, color: '#a78bfa' },
+                    { text: '項目3', weight: 1, color: '#22d3ee' }
                 ];
                 this.rotation = 0;
                 this.isSpinning = false;
                 this.history = [];
                 this.presets = [];
-                this.defaultColors = ['#f9a8d4', '#93c5fd', '#a5b4fc', '#fecdd3', '#bbf7d0', '#fde68a', '#c4b5fd', '#fdba74'];
                 this.lastResult = null;
+                this.colors = [
+                    '#f472b6', '#a78bfa', '#22d3ee', '#4ade80',
+                    '#facc15', '#fb923c', '#f87171', '#c084fc'
+                ];
 
-                // Settings
                 this.settings = {
                     soundEnabled: false,
                     confettiEnabled: true,
@@ -733,37 +1232,50 @@
                     darkMode: false
                 };
 
+                this.init();
+            }
+
+            init() {
                 this.resizeCanvas();
-                this.initializeEventListeners();
-                this.loadFromLocalStorage();
+                this.loadFromStorage();
+                this.setupEventListeners();
                 this.updateItemList();
-                this.draw();
-                this.initializeTabs();
                 this.updatePresetList();
                 this.applySettings();
+                this.draw();
             }
 
             resizeCanvas() {
-                const container = this.canvas.parentElement;
+                const container = document.getElementById('rouletteContainer');
                 const size = Math.min(container.offsetWidth, container.offsetHeight);
-                this.canvas.width = size;
-                this.canvas.height = size;
+                this.canvas.width = size * 2;
+                this.canvas.height = size * 2;
+                this.ctx.scale(2, 2);
             }
 
-            initializeEventListeners() {
-                document.getElementById('spinButton').addEventListener('click', () => this.spin());
-                document.getElementById('addItemButton').addEventListener('click', () => this.addItem());
-                document.getElementById('themeToggle').addEventListener('click', () => this.toggleTheme());
-                document.getElementById('settingsToggle').addEventListener('click', () => toggleSettings());
-
-                this.canvas.addEventListener('click', () => {
+            setupEventListeners() {
+                document.getElementById('spinBtn').addEventListener('click', () => this.spin());
+                document.getElementById('addBtn').addEventListener('click', () => this.addItem());
+                document.getElementById('themeBtn').addEventListener('click', () => this.toggleTheme());
+                document.getElementById('settingsBtn').addEventListener('click', () => toggleSettings());
+                document.getElementById('rouletteContainer').addEventListener('click', () => {
                     if (!this.isSpinning) this.spin();
                 });
 
-                // Keyboard shortcuts
+                // Tabs
+                document.querySelectorAll('.tab-btn').forEach(btn => {
+                    btn.addEventListener('click', () => {
+                        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+                        document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+                        btn.classList.add('active');
+                        document.getElementById(`tab-${btn.dataset.tab}`).classList.add('active');
+                        if (btn.dataset.tab === 'stats') this.updateStats();
+                    });
+                });
+
+                // Keyboard
                 document.addEventListener('keydown', (e) => {
                     if (e.target.tagName === 'INPUT') return;
-
                     switch(e.code) {
                         case 'Space':
                         case 'Enter':
@@ -776,358 +1288,330 @@
                         case 'KeyA':
                             this.addItem();
                             break;
-                        case 'KeyR':
-                            if (confirm('すべての項目をリセットしますか？')) {
-                                this.items = [
-                                    { text: '項目1', weight: 1, color: '#f9a8d4' },
-                                    { text: '項目2', weight: 1, color: '#93c5fd' },
-                                    { text: '項目3', weight: 1, color: '#a5b4fc' }
-                                ];
-                                this.updateItemList();
-                                this.saveToLocalStorage();
-                            }
-                            break;
                         case 'KeyS':
                             toggleSettings();
                             break;
                     }
                 });
 
-                // Resize handler
+                // Resize
                 window.addEventListener('resize', () => {
                     this.resizeCanvas();
                     this.draw();
                 });
             }
 
-            initializeTabs() {
-                const tabs = document.querySelectorAll('.tab');
-                tabs.forEach(tab => {
-                    tab.addEventListener('click', () => {
-                        tabs.forEach(t => t.classList.remove('active'));
-                        tab.classList.add('active');
-
-                        document.querySelectorAll('.tab-content').forEach(content => {
-                            content.classList.remove('active');
-                        });
-                        document.getElementById(`tab-${tab.dataset.tab}`).classList.add('active');
-
-                        if (tab.dataset.tab === 'stats') this.updateStats();
-                    });
-                });
-            }
-
-            toggleTheme() {
-                this.settings.darkMode = !this.settings.darkMode;
-                document.documentElement.setAttribute('data-theme', this.settings.darkMode ? 'dark' : 'light');
-                document.getElementById('themeToggle').innerHTML = this.settings.darkMode ?
-                    '<i class="fas fa-sun"></i>' : '<i class="fas fa-moon"></i>';
-                this.saveToLocalStorage();
-                this.draw();
-            }
-
-            applySettings() {
-                // Apply dark mode
-                if (this.settings.darkMode) {
-                    document.documentElement.setAttribute('data-theme', 'dark');
-                    document.getElementById('themeToggle').innerHTML = '<i class="fas fa-sun"></i>';
-                }
-
-                // Apply toggle states
-                document.getElementById('soundToggle').classList.toggle('active', this.settings.soundEnabled);
-                document.getElementById('confettiToggle').classList.toggle('active', this.settings.confettiEnabled);
-                document.getElementById('vibrationToggle').classList.toggle('active', this.settings.vibrationEnabled);
-            }
-
-            loadFromLocalStorage() {
+            loadFromStorage() {
                 try {
-                    const savedItems = localStorage.getItem('rouletteItems');
-                    const savedHistory = localStorage.getItem('rouletteHistory');
-                    const savedPresets = localStorage.getItem('roulettePresets');
-                    const savedSettings = localStorage.getItem('rouletteSettings');
+                    const items = localStorage.getItem('rouletteItems');
+                    const history = localStorage.getItem('rouletteHistory');
+                    const presets = localStorage.getItem('roulettePresets');
+                    const settings = localStorage.getItem('rouletteSettings');
 
-                    if (savedItems) this.items = JSON.parse(savedItems);
-                    if (savedHistory) {
-                        this.history = JSON.parse(savedHistory);
-                        this.updateHistory();
-                    }
-                    if (savedPresets) this.presets = JSON.parse(savedPresets);
-                    if (savedSettings) this.settings = { ...this.settings, ...JSON.parse(savedSettings) };
+                    if (items) this.items = JSON.parse(items);
+                    if (history) this.history = JSON.parse(history);
+                    if (presets) this.presets = JSON.parse(presets);
+                    if (settings) this.settings = { ...this.settings, ...JSON.parse(settings) };
                 } catch (e) {
-                    console.error('データの読み込みに失敗しました:', e);
+                    console.error('Failed to load data:', e);
                 }
             }
 
-            saveToLocalStorage() {
+            saveToStorage() {
                 try {
                     localStorage.setItem('rouletteItems', JSON.stringify(this.items));
                     localStorage.setItem('rouletteHistory', JSON.stringify(this.history));
                     localStorage.setItem('roulettePresets', JSON.stringify(this.presets));
                     localStorage.setItem('rouletteSettings', JSON.stringify(this.settings));
                 } catch (e) {
-                    console.error('データの保存に失敗しました:', e);
+                    console.error('Failed to save data:', e);
                 }
             }
 
+            toggleTheme() {
+                this.settings.darkMode = !this.settings.darkMode;
+                document.documentElement.setAttribute('data-theme', this.settings.darkMode ? 'dark' : 'light');
+                document.getElementById('themeBtn').innerHTML = this.settings.darkMode
+                    ? '<i class="fas fa-sun"></i>'
+                    : '<i class="fas fa-moon"></i>';
+                this.saveToStorage();
+                this.draw();
+            }
+
+            applySettings() {
+                if (this.settings.darkMode) {
+                    document.documentElement.setAttribute('data-theme', 'dark');
+                    document.getElementById('themeBtn').innerHTML = '<i class="fas fa-sun"></i>';
+                }
+                document.getElementById('soundToggle').classList.toggle('active', this.settings.soundEnabled);
+                document.getElementById('confettiToggle').classList.toggle('active', this.settings.confettiEnabled);
+                document.getElementById('vibrationToggle').classList.toggle('active', this.settings.vibrationEnabled);
+            }
+
             updateItemList() {
-                const itemList = document.getElementById('itemList');
-                itemList.innerHTML = this.items.map((item, index) => `
+                const list = document.getElementById('itemList');
+                list.innerHTML = this.items.map((item, i) => `
                     <div class="item-row">
-                        <input type="color" class="color-input"
-                            value="${item.color || this.defaultColors[index % this.defaultColors.length]}"
-                            onchange="roulette.updateItemColor(${index}, this.value)"
-                            title="色を変更">
-                        <input type="text" class="item-input"
-                            value="${item.text}"
-                            onchange="roulette.updateItemText(${index}, this.value)"
-                            placeholder="項目名">
-                        <input type="number" class="weight-input" min="1" max="100"
-                            value="${item.weight}"
-                            onchange="roulette.updateItemWeight(${index}, this.value)"
-                            title="確率 (重み)">
-                        <button class="delete-btn" onclick="roulette.removeItem(${index})" title="削除">
+                        <input type="color" class="color-picker" value="${item.color}"
+                            onchange="roulette.updateColor(${i}, this.value)">
+                        <input type="text" class="item-input" value="${item.text}"
+                            onchange="roulette.updateText(${i}, this.value)" placeholder="項目名">
+                        <input type="number" class="weight-input" value="${item.weight}" min="1" max="100"
+                            onchange="roulette.updateWeight(${i}, this.value)">
+                        <button class="delete-btn" onclick="roulette.removeItem(${i})">
                             <i class="fas fa-times"></i>
                         </button>
                     </div>
                 `).join('');
 
-                this.updateTotalWeight();
+                this.updateProbabilityDisplay();
                 this.draw();
             }
 
-            updateTotalWeight() {
+            updateProbabilityDisplay() {
                 const total = this.items.reduce((sum, item) => sum + item.weight, 0);
-                const totalWeightDiv = document.getElementById('totalWeight');
-
-                const percentages = this.items.map(item =>
-                    ((item.weight / total) * 100).toFixed(1)
-                );
-
-                totalWeightDiv.innerHTML = `合計: ${total} (${this.items.map((item, i) =>
-                    `${item.text}: ${percentages[i]}%`).join(', ')})`;
-                totalWeightDiv.classList.toggle('warning', total > 100);
+                const display = document.getElementById('probabilityDisplay');
+                display.innerHTML = this.items.map(item => {
+                    const pct = ((item.weight / total) * 100).toFixed(1);
+                    return `<span style="color: ${item.color}; font-weight: 600;">${item.text}: ${pct}%</span>`;
+                }).join(' &nbsp;|&nbsp; ');
             }
 
-            updateItemText(index, text) {
-                this.items[index].text = text;
-                this.saveToLocalStorage();
+            updateText(i, text) {
+                this.items[i].text = text;
+                this.saveToStorage();
+                this.updateProbabilityDisplay();
                 this.draw();
             }
 
-            updateItemWeight(index, weight) {
-                weight = Math.max(1, Math.min(100, parseInt(weight) || 1));
-                this.items[index].weight = weight;
-                this.saveToLocalStorage();
-                this.updateTotalWeight();
+            updateWeight(i, weight) {
+                this.items[i].weight = Math.max(1, Math.min(100, parseInt(weight) || 1));
+                this.saveToStorage();
+                this.updateProbabilityDisplay();
                 this.draw();
             }
 
-            updateItemColor(index, color) {
-                this.items[index].color = color;
-                this.saveToLocalStorage();
+            updateColor(i, color) {
+                this.items[i].color = color;
+                this.saveToStorage();
                 this.draw();
             }
 
             addItem() {
-                const newColor = this.defaultColors[this.items.length % this.defaultColors.length];
-                this.items.push({ text: `項目${this.items.length + 1}`, weight: 1, color: newColor });
+                const color = this.colors[this.items.length % this.colors.length];
+                this.items.push({ text: `項目${this.items.length + 1}`, weight: 1, color });
                 this.updateItemList();
-                this.saveToLocalStorage();
+                this.saveToStorage();
             }
 
-            removeItem(index) {
+            removeItem(i) {
                 if (this.items.length > 2) {
-                    this.items.splice(index, 1);
+                    this.items.splice(i, 1);
                     this.updateItemList();
-                    this.saveToLocalStorage();
+                    this.saveToStorage();
                 } else {
                     alert('最低2つの項目が必要です');
                 }
             }
 
             draw() {
-                const width = this.canvas.width;
-                const height = this.canvas.height;
-                const centerX = width / 2;
-                const centerY = height / 2;
-                const radius = Math.min(width, height) / 2 - 10;
+                const size = this.canvas.width / 2;
+                const center = size / 2;
+                const radius = center - 15;
 
-                this.ctx.clearRect(0, 0, width, height);
+                this.ctx.clearRect(0, 0, size, size);
 
-                // Draw outer ring
+                // Outer glow
+                const glowGradient = this.ctx.createRadialGradient(center, center, radius * 0.8, center, center, radius + 20);
+                glowGradient.addColorStop(0, 'transparent');
+                glowGradient.addColorStop(1, this.settings.darkMode ? 'rgba(244, 114, 182, 0.2)' : 'rgba(236, 72, 153, 0.15)');
+                this.ctx.fillStyle = glowGradient;
+                this.ctx.fillRect(0, 0, size, size);
+
+                // Outer ring
                 this.ctx.beginPath();
-                this.ctx.arc(centerX, centerY, radius + 5, 0, 2 * Math.PI);
-                const gradient = this.ctx.createLinearGradient(0, 0, width, height);
-                gradient.addColorStop(0, '#f9a8d4');
-                gradient.addColorStop(1, '#93c5fd');
-                this.ctx.strokeStyle = gradient;
-                this.ctx.lineWidth = 8;
+                this.ctx.arc(center, center, radius + 8, 0, Math.PI * 2);
+                const ringGradient = this.ctx.createLinearGradient(0, 0, size, size);
+                ringGradient.addColorStop(0, '#ec4899');
+                ringGradient.addColorStop(0.5, '#8b5cf6');
+                ringGradient.addColorStop(1, '#06b6d4');
+                this.ctx.strokeStyle = ringGradient;
+                this.ctx.lineWidth = 6;
                 this.ctx.stroke();
 
-                // Draw white background
+                // White background
                 this.ctx.beginPath();
-                this.ctx.arc(centerX, centerY, radius, 0, 2 * Math.PI);
-                this.ctx.fillStyle = this.settings.darkMode ? '#2a2a4a' : '#ffffff';
+                this.ctx.arc(center, center, radius, 0, Math.PI * 2);
+                this.ctx.fillStyle = this.settings.darkMode ? '#1e1e32' : '#ffffff';
                 this.ctx.shadowColor = 'rgba(0, 0, 0, 0.1)';
-                this.ctx.shadowBlur = 10;
+                this.ctx.shadowBlur = 20;
                 this.ctx.fill();
                 this.ctx.shadowBlur = 0;
 
-                const totalWeight = this.items.reduce((sum, item) => sum + item.weight, 0);
-                let currentAngle = this.rotation;
+                // Sections
+                const total = this.items.reduce((sum, item) => sum + item.weight, 0);
+                let angle = this.rotation;
 
-                // Draw sections
-                this.items.forEach((item, index) => {
-                    const sliceAngle = (2 * Math.PI * item.weight) / totalWeight;
-                    const endAngle = currentAngle + sliceAngle;
+                this.items.forEach((item, i) => {
+                    const sliceAngle = (Math.PI * 2 * item.weight) / total;
 
-                    // Section fill
+                    // Section
                     this.ctx.beginPath();
-                    this.ctx.moveTo(centerX, centerY);
-                    this.ctx.arc(centerX, centerY, radius - 2, currentAngle, endAngle);
+                    this.ctx.moveTo(center, center);
+                    this.ctx.arc(center, center, radius - 3, angle, angle + sliceAngle);
                     this.ctx.closePath();
-                    this.ctx.fillStyle = item.color || this.defaultColors[index % this.defaultColors.length];
+
+                    // Gradient fill
+                    const midAngle = angle + sliceAngle / 2;
+                    const gradX = center + Math.cos(midAngle) * radius * 0.5;
+                    const gradY = center + Math.sin(midAngle) * radius * 0.5;
+                    const sectionGradient = this.ctx.createRadialGradient(center, center, 0, gradX, gradY, radius);
+                    sectionGradient.addColorStop(0, this.lightenColor(item.color, 20));
+                    sectionGradient.addColorStop(1, item.color);
+                    this.ctx.fillStyle = sectionGradient;
                     this.ctx.fill();
 
-                    // Section border
+                    // Border
                     this.ctx.beginPath();
-                    this.ctx.moveTo(centerX, centerY);
-                    this.ctx.lineTo(
-                        centerX + Math.cos(currentAngle) * radius,
-                        centerY + Math.sin(currentAngle) * radius
-                    );
-                    this.ctx.strokeStyle = 'rgba(255, 255, 255, 0.8)';
+                    this.ctx.moveTo(center, center);
+                    this.ctx.lineTo(center + Math.cos(angle) * radius, center + Math.sin(angle) * radius);
+                    this.ctx.strokeStyle = 'rgba(255, 255, 255, 0.5)';
                     this.ctx.lineWidth = 2;
                     this.ctx.stroke();
 
                     // Text
                     this.ctx.save();
-                    this.ctx.translate(centerX, centerY);
-                    this.ctx.rotate(currentAngle + sliceAngle / 2);
+                    this.ctx.translate(center, center);
+                    this.ctx.rotate(angle + sliceAngle / 2);
                     this.ctx.textAlign = 'right';
-                    this.ctx.fillStyle = this.settings.darkMode ? '#ffffff' : '#4a044e';
-                    this.ctx.font = `bold ${Math.max(12, radius / 15)}px "M PLUS Rounded 1c"`;
-                    this.ctx.shadowColor = 'rgba(255, 255, 255, 0.5)';
+                    this.ctx.fillStyle = this.settings.darkMode ? '#ffffff' : '#1f2937';
+                    this.ctx.font = `bold ${Math.max(11, radius / 12)}px "M PLUS Rounded 1c"`;
+                    this.ctx.shadowColor = 'rgba(255, 255, 255, 0.8)';
                     this.ctx.shadowBlur = 4;
-
-                    // Truncate text if too long
-                    let displayText = item.text;
-                    if (displayText.length > 8) {
-                        displayText = displayText.substring(0, 7) + '...';
-                    }
-                    this.ctx.fillText(displayText, radius - 20, 5);
+                    let text = item.text.length > 8 ? item.text.slice(0, 7) + '…' : item.text;
+                    this.ctx.fillText(text, radius - 20, 4);
                     this.ctx.restore();
 
-                    currentAngle = endAngle;
+                    angle += sliceAngle;
                 });
 
                 // Center circle
                 this.ctx.beginPath();
-                this.ctx.arc(centerX, centerY, radius * 0.15, 0, 2 * Math.PI);
-                const centerGradient = this.ctx.createRadialGradient(
-                    centerX, centerY, 0,
-                    centerX, centerY, radius * 0.15
-                );
+                this.ctx.arc(center, center, radius * 0.18, 0, Math.PI * 2);
+                const centerGradient = this.ctx.createRadialGradient(center - 5, center - 5, 0, center, center, radius * 0.18);
                 centerGradient.addColorStop(0, '#ffffff');
-                centerGradient.addColorStop(1, '#f0f0f0');
+                centerGradient.addColorStop(1, '#f3f4f6');
                 this.ctx.fillStyle = centerGradient;
+                this.ctx.shadowColor = 'rgba(0, 0, 0, 0.1)';
+                this.ctx.shadowBlur = 10;
                 this.ctx.fill();
-                this.ctx.strokeStyle = gradient;
-                this.ctx.lineWidth = 3;
+                this.ctx.strokeStyle = ringGradient;
+                this.ctx.lineWidth = 4;
                 this.ctx.stroke();
+                this.ctx.shadowBlur = 0;
+
+                // Center icon
+                this.ctx.fillStyle = this.settings.darkMode ? '#6b7280' : '#9ca3af';
+                this.ctx.font = `${radius * 0.12}px "Font Awesome 6 Free"`;
+                this.ctx.textAlign = 'center';
+                this.ctx.textBaseline = 'middle';
+                this.ctx.fillText('\uf111', center, center);
+            }
+
+            lightenColor(color, percent) {
+                const num = parseInt(color.replace('#', ''), 16);
+                const amt = Math.round(2.55 * percent);
+                const R = Math.min(255, (num >> 16) + amt);
+                const G = Math.min(255, ((num >> 8) & 0x00FF) + amt);
+                const B = Math.min(255, (num & 0x0000FF) + amt);
+                return `#${(0x1000000 + R * 0x10000 + G * 0x100 + B).toString(16).slice(1)}`;
             }
 
             getSelectedItem() {
-                const totalWeight = this.items.reduce((sum, item) => sum + item.weight, 0);
-                const normalizedRotation = (((this.rotation + Math.PI / 2) % (2 * Math.PI)) + 2 * Math.PI) % (2 * Math.PI);
-                let currentAngle = 0;
+                const total = this.items.reduce((sum, item) => sum + item.weight, 0);
+                const normalized = (((this.rotation + Math.PI / 2) % (Math.PI * 2)) + Math.PI * 2) % (Math.PI * 2);
+                let angle = 0;
 
                 for (let i = this.items.length - 1; i >= 0; i--) {
-                    const item = this.items[i];
-                    const sliceAngle = (2 * Math.PI * item.weight) / totalWeight;
-                    if (normalizedRotation >= currentAngle && normalizedRotation < currentAngle + sliceAngle) {
-                        return item;
+                    const sliceAngle = (Math.PI * 2 * this.items[i].weight) / total;
+                    if (normalized >= angle && normalized < angle + sliceAngle) {
+                        return this.items[i];
                     }
-                    currentAngle += sliceAngle;
+                    angle += sliceAngle;
                 }
-
                 return this.items[this.items.length - 1];
             }
 
             playSound(type) {
                 if (!this.settings.soundEnabled) return;
-
-                const audioContext = new (window.AudioContext || window.webkitAudioContext)();
-                const oscillator = audioContext.createOscillator();
-                const gainNode = audioContext.createGain();
-
-                oscillator.connect(gainNode);
-                gainNode.connect(audioContext.destination);
+                const ctx = new (window.AudioContext || window.webkitAudioContext)();
+                const osc = ctx.createOscillator();
+                const gain = ctx.createGain();
+                osc.connect(gain);
+                gain.connect(ctx.destination);
 
                 if (type === 'tick') {
-                    oscillator.frequency.value = 800;
-                    gainNode.gain.value = 0.1;
-                    oscillator.start();
-                    oscillator.stop(audioContext.currentTime + 0.05);
+                    osc.frequency.value = 800;
+                    gain.gain.value = 0.1;
+                    osc.start();
+                    osc.stop(ctx.currentTime + 0.03);
                 } else if (type === 'win') {
-                    oscillator.type = 'sine';
-                    oscillator.frequency.setValueAtTime(523.25, audioContext.currentTime);
-                    oscillator.frequency.setValueAtTime(659.25, audioContext.currentTime + 0.1);
-                    oscillator.frequency.setValueAtTime(783.99, audioContext.currentTime + 0.2);
-                    gainNode.gain.value = 0.3;
-                    oscillator.start();
-                    oscillator.stop(audioContext.currentTime + 0.4);
+                    osc.type = 'sine';
+                    osc.frequency.setValueAtTime(523.25, ctx.currentTime);
+                    osc.frequency.setValueAtTime(659.25, ctx.currentTime + 0.1);
+                    osc.frequency.setValueAtTime(783.99, ctx.currentTime + 0.2);
+                    gain.gain.value = 0.3;
+                    osc.start();
+                    osc.stop(ctx.currentTime + 0.4);
                 }
             }
 
             vibrate() {
                 if (this.settings.vibrationEnabled && navigator.vibrate) {
-                    navigator.vibrate(50);
+                    navigator.vibrate(30);
                 }
             }
 
             spin() {
                 if (this.isSpinning) return;
-
                 this.isSpinning = true;
-                const spinButton = document.getElementById('spinButton');
-                spinButton.disabled = true;
-                spinButton.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>回転中...';
-                document.getElementById('pointer').classList.add('active');
 
-                const totalRotation = 2 * Math.PI * (8 + Math.random() * 4);
-                const duration = 5000;
-                const startTime = performance.now();
+                const btn = document.getElementById('spinBtn');
+                btn.disabled = true;
+                btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> 回転中...';
+
+                const totalRotation = Math.PI * 2 * (10 + Math.random() * 5);
+                const duration = 6000;
+                const start = performance.now();
                 const startRotation = this.rotation;
-                let lastTickAngle = startRotation;
+                let lastTick = startRotation;
 
-                const animate = (currentTime) => {
-                    const elapsed = currentTime - startTime;
+                const animate = (time) => {
+                    const elapsed = time - start;
                     const progress = Math.min(elapsed / duration, 1);
+                    const ease = 1 - Math.pow(1 - progress, 4);
 
-                    const easeOut = t => 1 - Math.pow(1 - t, 3);
-
-                    this.rotation = startRotation + totalRotation * easeOut(progress);
+                    this.rotation = startRotation + totalRotation * ease;
                     this.draw();
 
-                    // Tick sound
-                    if (this.rotation - lastTickAngle > Math.PI / 8) {
+                    if (this.rotation - lastTick > Math.PI / 10) {
                         this.playSound('tick');
                         this.vibrate();
-                        lastTickAngle = this.rotation;
+                        document.getElementById('pointer').classList.add('bounce');
+                        setTimeout(() => document.getElementById('pointer').classList.remove('bounce'), 150);
+                        lastTick = this.rotation;
                     }
 
                     if (progress < 1) {
                         requestAnimationFrame(animate);
                     } else {
                         this.isSpinning = false;
-                        spinButton.disabled = false;
-                        spinButton.innerHTML = '<i class="fas fa-play mr-2"></i>回転開始';
-                        document.getElementById('pointer').classList.remove('active');
+                        btn.disabled = false;
+                        btn.innerHTML = '<i class="fas fa-play"></i> 回転開始';
 
-                        const selectedItem = this.getSelectedItem();
-                        this.lastResult = selectedItem;
-                        this.addToHistory(selectedItem);
+                        const result = this.getSelectedItem();
+                        this.lastResult = result;
+                        this.addToHistory(result);
                         this.playSound('win');
 
                         if (this.settings.vibrationEnabled && navigator.vibrate) {
@@ -1138,7 +1622,7 @@
                             this.createConfetti();
                         }
 
-                        this.showResult(selectedItem);
+                        this.showResult(result);
                     }
                 };
 
@@ -1146,122 +1630,96 @@
             }
 
             createConfetti() {
-                const colors = ['#f9a8d4', '#93c5fd', '#a5b4fc', '#fecdd3', '#bbf7d0', '#fde68a'];
-
-                for (let i = 0; i < 50; i++) {
+                const colors = ['#f472b6', '#a78bfa', '#22d3ee', '#4ade80', '#facc15', '#fb923c'];
+                for (let i = 0; i < 60; i++) {
                     setTimeout(() => {
-                        const confetti = document.createElement('div');
-                        confetti.className = 'confetti';
-                        confetti.style.left = Math.random() * window.innerWidth + 'px';
-                        confetti.style.top = '-10px';
-                        confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
-                        confetti.style.borderRadius = Math.random() > 0.5 ? '50%' : '0';
-                        confetti.style.transform = `rotate(${Math.random() * 360}deg)`;
-                        document.body.appendChild(confetti);
+                        const el = document.createElement('div');
+                        el.className = 'confetti';
+                        el.style.left = Math.random() * window.innerWidth + 'px';
+                        el.style.top = '-10px';
+                        el.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+                        el.style.borderRadius = Math.random() > 0.5 ? '50%' : '2px';
+                        el.style.width = (5 + Math.random() * 10) + 'px';
+                        el.style.height = (5 + Math.random() * 10) + 'px';
+                        document.body.appendChild(el);
 
-                        gsap.to(confetti, {
+                        gsap.to(el, {
                             y: window.innerHeight + 100,
-                            x: (Math.random() - 0.5) * 200,
+                            x: (Math.random() - 0.5) * 300,
                             rotation: Math.random() * 720,
-                            duration: 2 + Math.random() * 2,
+                            duration: 2.5 + Math.random() * 2,
                             ease: 'power1.out',
-                            onComplete: () => confetti.remove()
+                            onComplete: () => el.remove()
                         });
-                    }, i * 30);
+                    }, i * 25);
                 }
             }
 
             addToHistory(item) {
-                const now = new Date();
                 this.history.unshift({
                     item: item.text,
-                    weight: item.weight,
                     color: item.color,
-                    timestamp: now.toLocaleString()
+                    timestamp: new Date().toLocaleString()
                 });
-
-                if (this.history.length > 100) {
-                    this.history.pop();
-                }
-
+                if (this.history.length > 100) this.history.pop();
                 this.updateHistory();
-                this.saveToLocalStorage();
+                this.saveToStorage();
             }
 
             updateHistory() {
-                const historyList = document.getElementById('historyList');
-                if (this.history.length === 0) {
-                    historyList.innerHTML = '<p style="text-align: center; color: var(--text-secondary); padding: 2rem;">履歴がありません</p>';
+                const list = document.getElementById('historyList');
+                if (!this.history.length) {
+                    list.innerHTML = '<div class="empty-state"><i class="fas fa-history"></i><p>履歴がありません</p></div>';
                     return;
                 }
-
-                historyList.innerHTML = this.history
-                    .slice(0, 20)
-                    .map((record, index) => `
-                        <div class="history-item">
-                            <div style="display: flex; align-items: center; gap: 0.5rem;">
-                                <span style="color: var(--text-secondary); font-size: 0.75rem;">#${index + 1}</span>
-                                <span style="width: 12px; height: 12px; border-radius: 50%; background: ${record.color || '#ccc'};"></span>
-                                <span class="font-semibold">${record.item}</span>
-                            </div>
-                            <div class="text-sm" style="color: var(--text-secondary);">
-                                ${record.timestamp}
-                            </div>
+                list.innerHTML = this.history.slice(0, 20).map((h, i) => `
+                    <div class="history-item">
+                        <div style="display: flex; align-items: center;">
+                            <span class="color-dot" style="background: ${h.color}"></span>
+                            <span style="font-weight: 600;">${h.item}</span>
                         </div>
-                    `)
-                    .join('');
+                        <span style="font-size: 0.8rem; color: var(--text-secondary);">${h.timestamp}</span>
+                    </div>
+                `).join('');
             }
 
             updateStats() {
-                const statsList = document.getElementById('statsList');
-                const totalSpins = this.history.length;
-                document.getElementById('totalSpins').textContent = totalSpins;
+                const list = document.getElementById('statsList');
+                const total = this.history.length;
+                document.getElementById('totalSpins').textContent = total;
 
-                if (totalSpins === 0) {
-                    statsList.innerHTML = '<p style="text-align: center; color: var(--text-secondary); padding: 2rem;">統計データがありません</p>';
+                if (!total) {
+                    list.innerHTML = '<div class="empty-state"><i class="fas fa-chart-bar"></i><p>統計データがありません</p></div>';
                     return;
                 }
 
-                // Count occurrences
                 const counts = {};
-                this.history.forEach(record => {
-                    counts[record.item] = (counts[record.item] || 0) + 1;
-                });
-
-                // Sort by count
+                this.history.forEach(h => counts[h.item] = (counts[h.item] || 0) + 1);
                 const sorted = Object.entries(counts).sort((a, b) => b[1] - a[1]);
 
-                statsList.innerHTML = sorted.map(([item, count]) => {
-                    const percentage = ((count / totalSpins) * 100).toFixed(1);
+                list.innerHTML = sorted.map(([item, count]) => {
+                    const pct = ((count / total) * 100).toFixed(1);
                     const itemData = this.items.find(i => i.text === item);
                     const color = itemData?.color || '#ccc';
-
                     return `
-                        <div class="stat-card">
-                            <div style="display: flex; align-items: center; gap: 0.5rem;">
-                                <span style="width: 16px; height: 16px; border-radius: 50%; background: ${color};"></span>
+                        <div class="stat-item">
+                            <div style="display: flex; align-items: center;">
+                                <span class="color-dot" style="background: ${color}"></span>
                                 <span style="font-weight: 600;">${item}</span>
                             </div>
                             <div style="text-align: right;">
-                                <div style="font-weight: bold;">${count}回</div>
-                                <div style="font-size: 0.75rem; color: var(--text-secondary);">${percentage}%</div>
+                                <span style="font-weight: 700;">${count}回</span>
+                                <span style="font-size: 0.8rem; color: var(--text-secondary); margin-left: 0.5rem;">${pct}%</span>
                             </div>
                         </div>
-                        <div class="stat-bar" style="margin-top: -0.25rem; margin-bottom: 0.75rem;">
-                            <div class="stat-bar-fill" style="width: ${percentage}%; background: ${color};"></div>
-                        </div>
+                        <div class="stat-bar"><div class="stat-bar-fill" style="width: ${pct}%; background: ${color};"></div></div>
                     `;
                 }).join('');
             }
 
             savePreset() {
-                const nameInput = document.getElementById('presetName');
-                const name = nameInput.value.trim();
-
-                if (!name) {
-                    alert('プリセット名を入力してください');
-                    return;
-                }
+                const name = document.getElementById('presetName').value.trim();
+                if (!name) return alert('プリセット名を入力してください');
 
                 this.presets.push({
                     name,
@@ -1269,43 +1727,38 @@
                     createdAt: new Date().toLocaleString()
                 });
 
-                nameInput.value = '';
-                this.saveToLocalStorage();
+                document.getElementById('presetName').value = '';
+                this.saveToStorage();
                 this.updatePresetList();
             }
 
-            loadPreset(index) {
-                const preset = this.presets[index];
-                this.items = JSON.parse(JSON.stringify(preset.items));
+            loadPreset(i) {
+                this.items = JSON.parse(JSON.stringify(this.presets[i].items));
                 this.updateItemList();
-                this.saveToLocalStorage();
+                this.saveToStorage();
             }
 
-            deletePreset(index) {
+            deletePreset(i) {
                 if (confirm('このプリセットを削除しますか？')) {
-                    this.presets.splice(index, 1);
-                    this.saveToLocalStorage();
+                    this.presets.splice(i, 1);
+                    this.saveToStorage();
                     this.updatePresetList();
                 }
             }
 
             updatePresetList() {
-                const presetList = document.getElementById('presetList');
-
-                if (this.presets.length === 0) {
-                    presetList.innerHTML = '<p style="text-align: center; color: var(--text-secondary); padding: 2rem;">保存されたプリセットがありません</p>';
+                const list = document.getElementById('presetList');
+                if (!this.presets.length) {
+                    list.innerHTML = '<div class="empty-state" style="padding: 2rem 0;"><i class="fas fa-bookmark"></i><p>保存されたプリセットがありません</p></div>';
                     return;
                 }
-
-                presetList.innerHTML = this.presets.map((preset, index) => `
-                    <div class="preset-item" onclick="roulette.loadPreset(${index})">
+                list.innerHTML = this.presets.map((p, i) => `
+                    <div class="preset-item" onclick="roulette.loadPreset(${i})">
                         <div>
-                            <div style="font-weight: 600;">${preset.name}</div>
-                            <div style="font-size: 0.75rem; color: var(--text-secondary);">
-                                ${preset.items.length}項目 | ${preset.createdAt}
-                            </div>
+                            <div style="font-weight: 600;">${p.name}</div>
+                            <div style="font-size: 0.75rem; color: var(--text-secondary);">${p.items.length}項目 | ${p.createdAt}</div>
                         </div>
-                        <button class="delete-btn" onclick="event.stopPropagation(); roulette.deletePreset(${index})">
+                        <button class="delete-btn" onclick="event.stopPropagation(); roulette.deletePreset(${i})">
                             <i class="fas fa-trash"></i>
                         </button>
                     </div>
@@ -1313,20 +1766,18 @@
             }
 
             showResult(item) {
-                const resultDisplay = document.getElementById('resultDisplay');
-                const modalOverlay = document.getElementById('modalOverlay');
-                const resultText = document.getElementById('resultText');
-                resultText.textContent = item.text;
-                resultText.style.color = item.color || '#f9a8d4';
-                resultDisplay.classList.add('show');
-                modalOverlay.classList.add('show');
+                const text = document.getElementById('resultText');
+                text.textContent = item.text;
+                text.style.color = item.color;
+                document.getElementById('modalOverlay').classList.add('show');
+                document.getElementById('resultModal').classList.add('show');
             }
         }
 
         // Global functions
         function hideResult() {
-            document.getElementById('resultDisplay').classList.remove('show');
             document.getElementById('modalOverlay').classList.remove('show');
+            document.getElementById('resultModal').classList.remove('show');
         }
 
         function toggleSettings() {
@@ -1336,26 +1787,26 @@
         function toggleSound() {
             roulette.settings.soundEnabled = !roulette.settings.soundEnabled;
             document.getElementById('soundToggle').classList.toggle('active');
-            roulette.saveToLocalStorage();
+            roulette.saveToStorage();
         }
 
         function toggleConfetti() {
             roulette.settings.confettiEnabled = !roulette.settings.confettiEnabled;
             document.getElementById('confettiToggle').classList.toggle('active');
-            roulette.saveToLocalStorage();
+            roulette.saveToStorage();
         }
 
         function toggleVibration() {
             roulette.settings.vibrationEnabled = !roulette.settings.vibrationEnabled;
             document.getElementById('vibrationToggle').classList.toggle('active');
-            roulette.saveToLocalStorage();
+            roulette.saveToStorage();
         }
 
         function clearHistory() {
             if (confirm('履歴をすべて削除しますか？')) {
                 roulette.history = [];
                 roulette.updateHistory();
-                roulette.saveToLocalStorage();
+                roulette.saveToStorage();
             }
         }
 
@@ -1368,26 +1819,27 @@
 
         function shareTwitter() {
             if (!roulette.lastResult) return;
-            const text = `ルーレットの結果: ${roulette.lastResult.text}`;
-            const url = encodeURIComponent(window.location.href);
-            window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${url}`, '_blank');
+            const text = encodeURIComponent(`ルーレットの結果: ${roulette.lastResult.text} 🎉`);
+            window.open(`https://twitter.com/intent/tweet?text=${text}&url=${encodeURIComponent(location.href)}`, '_blank');
         }
 
         function shareLine() {
             if (!roulette.lastResult) return;
-            const text = `ルーレットの結果: ${roulette.lastResult.text}\n${window.location.href}`;
-            window.open(`https://social-plugins.line.me/lineit/share?text=${encodeURIComponent(text)}`, '_blank');
+            const text = encodeURIComponent(`ルーレットの結果: ${roulette.lastResult.text} 🎉\n${location.href}`);
+            window.open(`https://social-plugins.line.me/lineit/share?text=${text}`, '_blank');
         }
 
         function copyResult() {
             if (!roulette.lastResult) return;
-            const text = `ルーレットの結果: ${roulette.lastResult.text}`;
-            navigator.clipboard.writeText(text).then(() => {
-                alert('コピーしました！');
-            });
+            navigator.clipboard.writeText(`ルーレットの結果: ${roulette.lastResult.text}`);
+            alert('コピーしました！');
         }
 
-        // Initialize
+        function savePreset() {
+            roulette.savePreset();
+        }
+
+        // Init
         let roulette;
         window.addEventListener('load', () => {
             roulette = new RouletteApp();
