@@ -1,0 +1,6 @@
+[build]
+  publish = "."
+
+# フォーム通知設定
+# Netlify管理画面で Site settings > Forms > Form notifications から
+# メール通知先を ktn@gusuku.one に設定してください
