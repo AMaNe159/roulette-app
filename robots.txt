@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://pastelroulette.netlify.app/sitemap.xml
+Sitemap: https://roulette.amemine.com/sitemap.xml
